@@ -4,7 +4,7 @@ import pytmx
 class Map:
     def __init__(self,screen):
         self.screen = screen
-        self.map = pytmx.load_pygame(r"D:\Games\TD\resources\maps\map_1.tmx")
+        self.map = pytmx.load_pygame(r"D:\Games\Tower-Defense-Game\resources\maps\map_1.tmx")
         
     def blockers(self):
         blockers = pygame.sprite.Group()
@@ -28,9 +28,18 @@ class Map:
                 checkpoints.append((x,y))
         return checkpoints
 
-    def generate_map(self):
+    def background(self):
         for layer in self.map.visible_layers:
-            for x,y,gid in layer:
-                tile = self.map.get_tile_image_by_gid(gid)
-                self.screen.blit(tile,(x * self.map.tilewidth, y * self.map.tileheight))
+            if layer.name == "background":
+                for x,y,gid in layer:
+                    tile = self.map.get_tile_image_by_gid(gid)
+                    if tile:
+                        self.screen.blit(tile,(x * self.map.tilewidth, y * self.map.tileheight))
     
+    def foreground(self):
+        for layer in self.map.visible_layers:
+            if layer.name == "foreground":
+                for x,y,gid in layer:
+                    tile = self.map.get_tile_image_by_gid(gid)
+                    if tile:
+                        self.screen.blit(tile,(x * self.map.tilewidth, y * self.map.tileheight))

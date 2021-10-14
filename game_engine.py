@@ -48,10 +48,14 @@ class Game:
     def draw(self):
         """ Draw everything on the screen for the game. """
         # draw map
-        self.map.generate_map()
+        self.map.background()
         
         # draw enemies
         self.enemies.update()
         self.enemies.draw(self.screen)
 
+        self.map.foreground()
+
         pygame.display.flip()
+
+# FOR foreground add generate layer after player, background -> player -> foreground

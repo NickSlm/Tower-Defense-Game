@@ -9,13 +9,9 @@ class Enemy(pygame.sprite.Sprite):
         self.checkpoints = checkpoints
         self.image = pygame.Surface((32,48))
         self.image.fill((255,0,0))
-        self.rect = self.image.get_rect(center=(self.checkpoints[0]))
+        self.rect = self.image.get_rect(center=(self.checkpoints[2]))
 
 
 
     def update(self):
-        for checkpoint in self.checkpoints:
-            print(checkpoint)
-        
-
-
+        pass     
