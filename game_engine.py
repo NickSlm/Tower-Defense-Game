@@ -4,8 +4,6 @@ from data.enemy.enemy import Enemy
 from data.map.map import Map
 
 
-
-
 class Game:
     """
     This class represents an instance of the game. If we need to
@@ -16,8 +14,7 @@ class Game:
         Constructor. Create all our attributes and initialize the game. 
         """
         self.screen = screen
-
-        # generate map and map objects/blockers
+        # Create map and map objects/blockers
         self.map = Map(self.screen)
         self.blockers = self.map.blockers()
         self.enemy_path = self.map.checkpoints()
@@ -29,7 +26,10 @@ class Game:
         # create tower
 
         # create enemy
-        self.enemies.add(Enemy(self.enemy_path))
+        self.enemy = Enemy(self.enemy_path)
+        self.enemies.add(self.enemy)
+
+
 
     def events(self):
         for event in pygame.event.get():
@@ -42,7 +42,11 @@ class Game:
 
 
     def run_logic(self):
-        pass
+        """
+        This method is run each time through the frame. It
+        updates positions and checks for collisions.
+        """
+
 
 
     def draw(self):
@@ -54,8 +58,9 @@ class Game:
         self.enemies.update()
         self.enemies.draw(self.screen)
 
-        self.map.foreground()
+        
 
+
+        self.map.foreground()
         pygame.display.flip()
 
-# FOR foreground add generate layer after player, background -> player -> foreground

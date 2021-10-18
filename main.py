@@ -14,11 +14,13 @@ def main():
 
     # Set Screen size
     screen_size = (SCREEN_WIDTH,SCREEN_HEIGHT)
+
     screen = pygame.display.set_mode(screen_size)
     pygame.display.set_caption("Nigga game")
-    game = Game(screen)
 
     clock = pygame.time.Clock()
+    game = Game(screen)
+
 
     running = True
 
