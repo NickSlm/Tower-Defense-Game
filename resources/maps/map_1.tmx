@@ -43,22 +43,22 @@
 </data>
  </layer>
  <objectgroup id="2" name="checkpoint" visible="0" locked="1">
-  <object id="1" name="point" x="-32" y="512">
+  <object id="1" name="point" x="-32" y="496">
    <point/>
   </object>
-  <object id="3" name="point" x="784" y="512">
+  <object id="3" name="point" x="768" y="496">
    <point/>
   </object>
-  <object id="5" name="point" x="784" y="704">
+  <object id="5" name="point" x="768" y="688">
    <point/>
   </object>
-  <object id="6" name="point" x="1104" y="704">
+  <object id="6" name="point" x="1088" y="688">
    <point/>
   </object>
-  <object id="7" name="point" x="1104" y="512">
+  <object id="7" name="point" x="1088" y="496">
    <point/>
   </object>
-  <object id="2" name="point" x="1956" y="512">
+  <object id="2" name="point" x="1956" y="496">
    <point/>
   </object>
  </objectgroup>

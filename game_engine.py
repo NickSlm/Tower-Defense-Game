@@ -35,19 +35,16 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
-            if event.type == pygame.KEYDOWN:             
+            if event.type == pygame.KEYDOWN:              
                 if event.key == pygame.K_ESCAPE:
                     return False
         return True
-
 
     def run_logic(self):
         """
         This method is run each time through the frame. It
         updates positions and checks for collisions.
         """
-
-
 
     def draw(self):
         """ Draw everything on the screen for the game. """

@@ -23,7 +23,6 @@ def main():
 
 
     running = True
-
     while running:
         running = game.events()
         game.run_logic()
