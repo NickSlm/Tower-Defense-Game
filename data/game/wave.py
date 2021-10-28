@@ -15,11 +15,11 @@ class Wave:
             amount = self.data[str(round)][enm]
             for i in range(amount):
                 if enm == 'red':
-                    wave.add(Enemy(self.enemy_path))
+                    wave.append(Enemy(self.enemy_path))
                 if enm == 'blue':
-                    wave.add(Enemy2(self.enemy_path))
+                    wave.append(Enemy2(self.enemy_path))
                 if enm == 'green':
-                    wave.add(Enemy3(self.enemy_path))
+                    wave.append(Enemy3(self.enemy_path))
                 amount -= 1
         return wave
 

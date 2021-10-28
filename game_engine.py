@@ -10,12 +10,12 @@ class Game:
     This class represents an instance of the game. If we need to
     reset the game we'd just need to create a new instance of this class. 
     """
-    def __init__(self,screen):
+    def __init__(self,screen,clock):
         """
         Constructor. Create all our attributes and initialize the game. 
         """
         self.screen = screen
-
+        self.clock = clock
         # Create map and map objects/blockers
         self.map = Map(self.screen)
         self.blockers = self.map.blockers()
@@ -39,7 +39,9 @@ class Game:
         self.enemies = pygame.sprite.Group()
         self.wave = Wave(self.enemy_path)
 
-
+        self.enm_group = []
+        self.elapsed, self.visible_monsters = 0, 0
+        
     def events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -69,7 +71,7 @@ class Game:
         if not self.game_over:
             if self.round_running:
                 if self.enemies_spawn:
-                    self.wave.generate_wave(self.round,self.enemies)
+                    self.wave.generate_wave(self.round,self.enm_group)
                     self.enemies_spawn = False
                 elif self.enemies_spawn == False:
                     if not self.enemies:
@@ -77,19 +79,27 @@ class Game:
                         self.round += 1
                 
 
-        print(self.enemies)
+        print(self.enm_group)
 
     def draw(self):
         """ Draw everything on the screen for the game. """
         # draw map background
         self.map.background()
+
         if not self.game_over:
             # draw towers
             self.towers.update()
             self.towers.draw(self.screen)
             # draw enemies
-            self.enemies.update()
-            self.enemies.draw(self.screen)
+            self.elapsed += self.clock.tick(60)
+            if self.elapsed >= 10:
+                self.elapsed = 0
+                self.visible_monsters += 1
+            for enm in self.enm_group[:1]:
+                enm.update()
+                enm.render(self.screen)
+            # self.enemies.update()
+            # self.enemies.draw(self.screen)
 
 
         # draw map foreground

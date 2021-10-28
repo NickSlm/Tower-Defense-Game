@@ -19,14 +19,14 @@ def main():
     pygame.display.set_caption("Nigga game")
 
     clock = pygame.time.Clock()
-    game = Game(screen)
+    game = Game(screen,clock)
 
     running = True
     while running:
         running = game.events()
         game.run_logic()
         game.draw()
-        clock.tick(60)
+        # clock.tick(60)
     pygame.quit()
 
 

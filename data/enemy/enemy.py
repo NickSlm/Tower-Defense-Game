@@ -53,6 +53,9 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         self.movement()
         # self.sprite_animation()
+    
+    def render(self,screen):
+        screen.blit(self.image,self.rect)
 
 class Enemy2(pygame.sprite.Sprite):
     def __init__(self,checkpoints):
@@ -84,6 +87,9 @@ class Enemy2(pygame.sprite.Sprite):
                 self.checkpoints = self.checkpoints[1:]
         else:
             self.kill()
+    
+    def render(self,screen):
+        screen.blit(self.image,self.rect)
 
 class Enemy3(pygame.sprite.Sprite):
     def __init__(self,checkpoints):
@@ -115,3 +121,6 @@ class Enemy3(pygame.sprite.Sprite):
                 self.checkpoints = self.checkpoints[1:]
         else:
             self.kill()
+
+    def render(self,screen):
+        screen.blit(self.image,self.rect)
