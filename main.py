@@ -21,7 +21,6 @@ def main():
     clock = pygame.time.Clock()
     game = Game(screen)
 
-
     running = True
     while running:
         running = game.events()
