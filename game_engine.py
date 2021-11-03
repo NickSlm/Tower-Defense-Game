@@ -1,7 +1,7 @@
 import pygame
-from data.enemy.enemy import Enemy, Enemy2
+import json
+from data.enemy.enemy import Enemy, Enemy2, Enemy3
 from data.game.ui import Health
-from data.game.wave import Wave
 from data.map.map import Map
 from time import sleep
 
@@ -15,7 +15,7 @@ class Game:
         Constructor. Create all our attributes and initialize the game. 
         """
         self.screen = screen
-
+        self.clock = pygame.time.Clock()
         # Create map and map objects/blockers
         self.map = Map(self.screen)
         self.blockers = self.map.blockers()
@@ -25,7 +25,7 @@ class Game:
         # Game
         self.game_over = False
         self.round_running = False
-        self.enemies_spawn = False
+        self.enemy_spawn = False
 
         self.round = 1
 
@@ -36,8 +36,11 @@ class Game:
         self.towers = pygame.sprite.Group()
 
         # Create wave instance
-        self.enemies = pygame.sprite.Group()
-        self.wave = Wave(self.enemy_path)
+        with open(r"D:\Games\Tower-Defense-Game\data\game\waves.json") as json_file:
+            self.data = json.load(json_file)
+        self.enemy_index = 0 
+        self.enemy_summoned = 0
+        self.enemy_sprites = pygame.sprite.Group()
 
 
     def events(self):
@@ -65,36 +68,69 @@ class Game:
         """
         This method is run each time through the frame. It
         updates positions and checks for collisions.
-        """        
+        """    
         if not self.game_over:
             if self.round_running:
                 if self.enemies_spawn:
-                    self.wave.generate_wave(self.round,self.enemies)
-                    self.enemies_spawn = False
-                elif self.enemies_spawn == False:
-                    if not self.enemies:
+                    # 
+                    self.enemy_list = [*self.data[str(self.round)]]
+                    self.enemy_type = self.enemy_list[self.enemy_index]
+                    amount = self.data[str(self.round)][self.enemy_type]
+                    if self.enemy_summoned < amount:
+                        if self.enemy_type == "red":
+                            if not pygame.sprite.spritecollideany(Enemy(self.enemy_path),self.enemy_sprites):
+                                self.enemy_sprites.add(Enemy(self.enemy_path))
+                                self.enemy_summoned += 1
+                        if self.enemy_type == "blue":
+                            if not pygame.sprite.spritecollideany(Enemy2(self.enemy_path),self.enemy_sprites):
+                                self.enemy_sprites.add(Enemy2(self.enemy_path))
+                                self.enemy_summoned += 1
+                        if self.enemy_type == "green":
+                            if not pygame.sprite.spritecollideany(Enemy3(self.enemy_path),self.enemy_sprites):
+                                self.enemy_sprites.add(Enemy3(self.enemy_path))
+                                self.enemy_summoned += 1
+                    if self.enemy_summoned == amount:
+                        self.enemy_summoned = 0 
+                        self.enemy_index +=1
+                    if len(self.enemy_sprites) == sum(self.data[str(self.round)].values()):
+                        self.enemy_index = 0
+                        self.enemies_spawn = False
+                    # 
+                elif not self.enemies_spawn:
+                    if not self.enemy_sprites:
                         self.round_running = False
                         self.round += 1
-                
 
-        print(self.enemies)
+                # update enemies
+                for sprite in self.enemy_sprites:
+                    if sprite.update():
+                        self.health -= sprite.damage
+
+                if self.health <= 0 or self.round == 100:
+                    self.game_over = True
+
+
 
     def draw(self):
         """ Draw everything on the screen for the game. """
         # draw map background
+
         self.map.background()
+
         if not self.game_over:
             # draw towers
+
             self.towers.update()
             self.towers.draw(self.screen)
-            # draw enemies
-            self.enemies.update()
-            self.enemies.draw(self.screen)
 
+            # draw enemies
+            self.enemy_sprites.draw(self.screen)
 
         # draw map foreground
         self.map.foreground()
         
+
+        # draw game over screen
         if self.game_over:
             text = self.myFont.render("Game Over, click to restart", 1, (0,0,0))
             center_x = (1920 // 2) - (text.get_width() // 2)
@@ -110,4 +146,6 @@ class Game:
         self.screen.blit(self.round_text,(960 - (self.round_text.get_width()// 2),10))
 
         pygame.display.flip()
+        self.clock.tick(60)
+
 

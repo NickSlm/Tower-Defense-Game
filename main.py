@@ -18,7 +18,6 @@ def main():
     screen = pygame.display.set_mode(screen_size)
     pygame.display.set_caption("Nigga game")
 
-    clock = pygame.time.Clock()
     game = Game(screen)
 
     running = True
@@ -26,7 +25,6 @@ def main():
         running = game.events()
         game.run_logic()
         game.draw()
-        clock.tick(60)
     pygame.quit()
 
 

@@ -34,7 +34,7 @@ class Enemy(pygame.sprite.Sprite):
     #         self.current_sprite = 0
     #     self.image = self.idle_sprites[int(self.current_sprite)]
 
-    def movement(self):
+    def update(self):
         if self.checkpoints:
             current_point = ((self.rect.x - self.checkpoints[0][0]),(self.rect.y - self.checkpoints[0][1]))
             if self.rect.x < self.checkpoints[0][0]:
@@ -45,14 +45,17 @@ class Enemy(pygame.sprite.Sprite):
                 self.rect.y += self.speed
             if self.rect.y > self.checkpoints[0][1]:
                 self.rect.y -= self.speed
-            if (current_point[0] / self.speed, current_point[1] / self.speed) == (0,0):
+            if (current_point[0] // self.speed, current_point[1] // self.speed) == (0,0):
                 self.checkpoints = self.checkpoints[1:]
         else:
             self.kill()
+            return True
 
-    def update(self):
-        self.movement()
-        # self.sprite_animation()
+        if self.hp <= 0:
+            self.kill()
+
+        return False
+
 
 class Enemy2(pygame.sprite.Sprite):
     def __init__(self,checkpoints):
@@ -80,10 +83,16 @@ class Enemy2(pygame.sprite.Sprite):
                 self.rect.y += self.speed
             if self.rect.y > self.checkpoints[0][1]:
                 self.rect.y -= self.speed
-            if (current_point[0] / self.speed, current_point[1] / self.speed) == (0,0):
+            if (current_point[0] // self.speed, current_point[1] // self.speed) == (0,0):
                 self.checkpoints = self.checkpoints[1:]
         else:
             self.kill()
+            return True
+
+        if self.hp <= 0:
+            self.kill()
+            
+        return False
 
 class Enemy3(pygame.sprite.Sprite):
     def __init__(self,checkpoints):
@@ -111,7 +120,14 @@ class Enemy3(pygame.sprite.Sprite):
                 self.rect.y += self.speed
             if self.rect.y > self.checkpoints[0][1]:
                 self.rect.y -= self.speed
-            if (current_point[0] / self.speed, current_point[1] / self.speed) == (0,0):
+            if (current_point[0] // self.speed, current_point[1] // self.speed) == (0,0):
                 self.checkpoints = self.checkpoints[1:]
         else:
             self.kill()
+            return True
+
+        if self.hp <= 0:
+            self.kill()
+
+        return False
+
