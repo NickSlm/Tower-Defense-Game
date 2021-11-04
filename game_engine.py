@@ -36,7 +36,7 @@ class Game:
         self.towers = pygame.sprite.Group()
 
         # Create wave instance
-        with open(r"D:\Games\Tower-Defense-Game\data\game\waves.json") as json_file:
+        with open(r"D:\Games\Tower-Defense-Game\data\game\round.json") as json_file:
             self.data = json.load(json_file)
         self.enemy_index = 0 
         self.enemy_summoned = 0
@@ -60,8 +60,7 @@ class Game:
                     pass
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.game_over:
-                    self.__init__(self.screen)
-                
+                    self.__init__(self.screen)  
         return True
 
     def run_logic(self):
@@ -73,9 +72,8 @@ class Game:
             if self.round_running:
                 if self.enemies_spawn:
                     # 
-                    self.enemy_list = [*self.data[str(self.round)]]
-                    self.enemy_type = self.enemy_list[self.enemy_index]
-                    amount = self.data[str(self.round)][self.enemy_type]
+                    self.enemy_type = self.data[str(self.round)]["enemy_order_type"][self.enemy_index]
+                    amount = self.data[str(self.round)]["enemy_amount"][self.enemy_index]
                     if self.enemy_summoned < amount:
                         if self.enemy_type == "red":
                             if not pygame.sprite.spritecollideany(Enemy(self.enemy_path),self.enemy_sprites):
@@ -92,7 +90,7 @@ class Game:
                     if self.enemy_summoned == amount:
                         self.enemy_summoned = 0 
                         self.enemy_index +=1
-                    if len(self.enemy_sprites) == sum(self.data[str(self.round)].values()):
+                    if len(self.enemy_sprites) == sum(self.data[str(self.round)]["enemy_amount"]):
                         self.enemy_index = 0
                         self.enemies_spawn = False
                     # 
@@ -105,7 +103,8 @@ class Game:
                 for sprite in self.enemy_sprites:
                     if sprite.update():
                         self.health -= sprite.damage
-
+                
+                # game over condition
                 if self.health <= 0 or self.round == 100:
                     self.game_over = True
 
