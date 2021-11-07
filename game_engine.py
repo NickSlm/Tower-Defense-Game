@@ -16,10 +16,12 @@ class Game:
         """
         self.screen = screen
         self.clock = pygame.time.Clock()
+
         # Create map and map objects/blockers
         self.map = Map(self.screen)
         self.blockers = self.map.blockers()
         self.enemy_path = self.map.checkpoints()
+        
         self.myFont = pygame.font.Font(r"D:\Games\Tower-Defense-Game\resources\fonts\IMMORTAL.ttf",24)
 
         # Game
@@ -74,6 +76,7 @@ class Game:
                     # 
                     self.enemy_type = self.data[str(self.round)]["enemy_order_type"][self.enemy_index]
                     amount = self.data[str(self.round)]["enemy_amount"][self.enemy_index]
+                    # Render Enemy
                     if self.enemy_summoned < amount:
                         if self.enemy_type == "red":
                             if not pygame.sprite.spritecollideany(Enemy(self.enemy_path),self.enemy_sprites):
@@ -87,9 +90,11 @@ class Game:
                             if not pygame.sprite.spritecollideany(Enemy3(self.enemy_path),self.enemy_sprites):
                                 self.enemy_sprites.add(Enemy3(self.enemy_path))
                                 self.enemy_summoned += 1
+                    # 
                     if self.enemy_summoned == amount:
                         self.enemy_summoned = 0 
                         self.enemy_index +=1
+
                     if len(self.enemy_sprites) == sum(self.data[str(self.round)]["enemy_amount"]):
                         self.enemy_index = 0
                         self.enemies_spawn = False
@@ -99,12 +104,12 @@ class Game:
                         self.round_running = False
                         self.round += 1
 
-                # update enemies
+                # Update enemies
                 for sprite in self.enemy_sprites:
                     if sprite.update():
                         self.health -= sprite.damage
                 
-                # game over condition
+                # Game over condition
                 if self.health <= 0 or self.round == 100:
                     self.game_over = True
 
@@ -112,31 +117,30 @@ class Game:
 
     def draw(self):
         """ Draw everything on the screen for the game. """
-        # draw map background
-
+        # Draw map background
         self.map.background()
 
         if not self.game_over:
-            # draw towers
-
+            
+            # Draw towers
             self.towers.update()
             self.towers.draw(self.screen)
 
-            # draw enemies
+            # Draw enemies
             self.enemy_sprites.draw(self.screen)
 
-        # draw map foreground
+        # Draw map foreground
         self.map.foreground()
         
 
-        # draw game over screen
+        # Draw game over screen
         if self.game_over:
             text = self.myFont.render("Game Over, click to restart", 1, (0,0,0))
             center_x = (1920 // 2) - (text.get_width() // 2)
             center_y = (1088 // 4) - (text.get_height() // 2)
             self.screen.blit(text, [center_x, center_y])
 
-        # draw player's resources
+        # Draw player's resources
         self.health_text = self.myFont.render("Health: "+str(self.health), 1, (0,0,0))
         self.money_text = self.myFont.render("Money: "+str(self.money), 1, (0,0,0))
         self.round_text = self.myFont.render("Round: "+str(self.round), 1, (0,0,0))
