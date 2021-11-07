@@ -18,8 +18,6 @@ class Enemy(pygame.sprite.Sprite):
         self.walk_sprites = load_sprites(r'D:\Games\Tower-Defense-Game\resources\sprites\enemies\0001\walk')
         self.checkpoints = checkpoints
 
-
-
         self.hp = 1
         self.damage = 1
         self.speed = 4
@@ -37,7 +35,6 @@ class Enemy(pygame.sprite.Sprite):
         self.image = self.walk_sprites[int(self.current_sprite)]
 
     def update(self):
-
         if self.checkpoints:
             self.sprite_animation()
             current_point = ((self.rect.centerx - self.checkpoints[0][0]),(self.rect.centery - (self.checkpoints[0][1] - (self.image.get_height() //3))))
@@ -84,7 +81,6 @@ class Enemy2(pygame.sprite.Sprite):
         self.image = self.walk_sprites[int(self.current_sprite)]
         
     def update(self):
-
         if self.checkpoints:
             self.sprite_animation()
             current_point = ((self.rect.centerx - self.checkpoints[0][0]),(self.rect.centery - (self.checkpoints[0][1] - (self.image.get_height() //3))))
@@ -146,7 +142,6 @@ class Enemy3(pygame.sprite.Sprite):
         else:
             self.kill()
             return True
-
 
         if self.hp <= 0:
             self.kill()

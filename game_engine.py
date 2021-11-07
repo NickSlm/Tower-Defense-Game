@@ -22,19 +22,20 @@ class Game:
         self.blockers = self.map.blockers()
         self.enemy_path = self.map.checkpoints()
         
-        self.myFont = pygame.font.Font(r"D:\Games\Tower-Defense-Game\resources\fonts\IMMORTAL.ttf",24)
 
         # Game
         self.game_over = False
         self.round_running = False
         self.enemy_spawn = False
-
         self.round = 1
 
+        self.myFont = pygame.font.Font(r"D:\Games\Tower-Defense-Game\resources\fonts\IMMORTAL.ttf",24)
         self.health= 100
-        self.money = 0
+        self.health_icon = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\heart.png')
+        self.money = 250
+        self.money_icon = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\gold-ingots.png')
 
-        # create sprite groups
+        # Create player sprites
         self.towers = pygame.sprite.Group()
 
         # Create wave instance
@@ -44,7 +45,6 @@ class Game:
         self.enemy_summoned = 0
         self.enemy_sprites = pygame.sprite.Group()
 
-
     def events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -52,7 +52,7 @@ class Game:
             if event.type == pygame.KEYDOWN:              
                 if event.key == pygame.K_ESCAPE:
                     return False
-                if event.key == pygame.K_r:
+                if event.key == pygame.K_SPACE:
                     if self.round_running == False:
                         self.round_running = True
                         self.enemies_spawn = True
@@ -144,8 +144,11 @@ class Game:
         self.health_text = self.myFont.render("Health: "+str(self.health), 1, (0,0,0))
         self.money_text = self.myFont.render("Money: "+str(self.money), 1, (0,0,0))
         self.round_text = self.myFont.render("Round: "+str(self.round), 1, (0,0,0))
+
         self.screen.blit(self.health_text,(10,10))
+        self.screen.blit(self.health_icon,(10 + self.health_text.get_width(),10))
         self.screen.blit(self.money_text,(10,40))
+        self.screen.blit(self.money_icon,(10 + self.money_text.get_width(),40))
         self.screen.blit(self.round_text,(960 - (self.round_text.get_width()// 2),10))
 
         pygame.display.flip()
