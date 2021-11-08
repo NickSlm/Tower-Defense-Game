@@ -1,9 +1,8 @@
 import pygame
 import json
 from data.enemy.enemy import Enemy, Enemy2, Enemy3
-from data.game.ui import Health
 from data.map.map import Map
-from time import sleep
+from data.player.tower import Tower
 
 class Game:
     """
@@ -17,6 +16,9 @@ class Game:
         self.screen = screen
         self.clock = pygame.time.Clock()
 
+        # Fonts
+        self.myFont = pygame.font.Font(r"D:\Games\Tower-Defense-Game\resources\fonts\IMMORTAL.ttf",24)
+
         # Create map and map objects/blockers
         self.map = Map(self.screen)
         self.blockers = self.map.blockers()
@@ -29,7 +31,8 @@ class Game:
         self.enemy_spawn = False
         self.round = 1
 
-        self.myFont = pygame.font.Font(r"D:\Games\Tower-Defense-Game\resources\fonts\IMMORTAL.ttf",24)
+
+
         self.health= 100
         self.health_icon = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\heart.png')
         self.money = 250
@@ -49,7 +52,14 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
-            if event.type == pygame.KEYDOWN:              
+
+            if event.type == pygame.KEYDOWN: 
+                mouse_x,mouse_y = pygame.mouse.get_pos()
+                if event.key == pygame.K_r:
+                    if not pygame.sprite.spritecollideany(Tower(mouse_x,mouse_y),self.blockers):
+                        if not pygame.sprite.spritecollideany(Tower(mouse_x,mouse_y),self.towers):
+                            self.towers.add(Tower(mouse_x,mouse_y))   
+
                 if event.key == pygame.K_ESCAPE:
                     return False
                 if event.key == pygame.K_SPACE:
@@ -58,8 +68,7 @@ class Game:
                         self.enemies_spawn = True
 
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_r:
-                    pass
+                pass
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.game_over:
                     self.__init__(self.screen)  
@@ -104,16 +113,17 @@ class Game:
                         self.round_running = False
                         self.round += 1
 
+                # Update player towers
+                self.towers.update()
+
                 # Update enemies
                 for sprite in self.enemy_sprites:
                     if sprite.update():
                         self.health -= sprite.damage
                 
-                # Game over condition
+                # Game-over condition
                 if self.health <= 0 or self.round == 100:
                     self.game_over = True
-
-
 
     def draw(self):
         """ Draw everything on the screen for the game. """
@@ -121,11 +131,8 @@ class Game:
         self.map.background()
 
         if not self.game_over:
-            
             # Draw towers
-            self.towers.update()
             self.towers.draw(self.screen)
-
             # Draw enemies
             self.enemy_sprites.draw(self.screen)
 
@@ -133,7 +140,7 @@ class Game:
         self.map.foreground()
         
 
-        # Draw game over screen
+        # Draw game-over screen
         if self.game_over:
             text = self.myFont.render("Game Over, click to restart", 1, (0,0,0))
             center_x = (1920 // 2) - (text.get_width() // 2)
@@ -144,7 +151,6 @@ class Game:
         self.health_text = self.myFont.render("Health: "+str(self.health), 1, (0,0,0))
         self.money_text = self.myFont.render("Money: "+str(self.money), 1, (0,0,0))
         self.round_text = self.myFont.render("Round: "+str(self.round), 1, (0,0,0))
-
         self.screen.blit(self.health_text,(10,10))
         self.screen.blit(self.health_icon,(10 + self.health_text.get_width(),10))
         self.screen.blit(self.money_text,(10,40))
