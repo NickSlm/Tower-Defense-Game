@@ -1,6 +1,5 @@
 import pygame
 import json
-from data.enemy.enemy import Enemy, Enemy2, Enemy3
 from data.enemy.spawn_enemy import EnemyWave
 from data.game.player import Player
 from data.map.map import Map
@@ -39,12 +38,7 @@ class Game:
         self.towers = pygame.sprite.Group()
 
         # Create wave
-        self.enemy_wave = EnemyWave()
-        with open(r"D:\Games\Tower-Defense-Game\data\game\round.json") as json_file:
-            self.data = json.load(json_file)
-        self.enemy_index = 0 
-        self.enemy_summoned = 0
-        self.enemy_sprites = pygame.sprite.Group()
+        self.enemy_wave = EnemyWave(self.enemy_path)
 
     def events(self):
         for event in pygame.event.get():
@@ -63,7 +57,7 @@ class Game:
                 if event.key == pygame.K_SPACE:
                     if self.round_running == False:
                         self.round_running = True
-                        self.enemies_spawn = True
+                        self.enemy_wave.enemies_spawn = True
 
             if event.type == pygame.KEYUP:
                 pass
@@ -77,49 +71,21 @@ class Game:
         This method is run each time through the frame. It
         updates positions and checks for collisions.
         """    
-        print("a")
         if not self.game_over:
             if self.round_running:
-                if self.enemies_spawn:
-                    # 
-                    self.enemy_type = self.data[str(self.round)]["enemy_order_type"][self.enemy_index]
-                    amount = self.data[str(self.round)]["enemy_amount"][self.enemy_index]
-                    # Render Enemy
-                    if self.enemy_summoned < amount:
-                        if self.enemy_type == "red":
-                            if not pygame.sprite.spritecollideany(Enemy(self.enemy_path),self.enemy_sprites):
-                                self.enemy_sprites.add(Enemy(self.enemy_path))
-                                self.enemy_summoned += 1
-                        if self.enemy_type == "blue":
-                            if not pygame.sprite.spritecollideany(Enemy2(self.enemy_path),self.enemy_sprites):
-                                self.enemy_sprites.add(Enemy2(self.enemy_path))
-                                self.enemy_summoned += 1
-                        if self.enemy_type == "green":
-                            if not pygame.sprite.spritecollideany(Enemy3(self.enemy_path),self.enemy_sprites):
-                                self.enemy_sprites.add(Enemy3(self.enemy_path))
-                                self.enemy_summoned += 1
-                    # 
-                    if self.enemy_summoned == amount:
-                        self.enemy_summoned = 0 
-                        self.enemy_index +=1
-
-                    if len(self.enemy_sprites) == sum(self.data[str(self.round)]["enemy_amount"]):
-                        self.enemy_index = 0
-                        self.enemies_spawn = False
-                    # 
-                elif not self.enemies_spawn:
-                    if not self.enemy_sprites:
+                # Enemy spawn
+                if self.enemy_wave.enemies_spawn:
+                    self.enemy_wave.generate_enemies(self.round)
+                elif not self.enemy_wave.enemies_spawn:
+                    if not self.enemy_wave.enemy_sprites:
                         self.round_running = False
                         self.round += 1
-
                 # Update player towers
                 self.towers.update()
-
                 # Update enemies
-                for sprite in self.enemy_sprites:
+                for sprite in self.enemy_wave.enemy_sprites:
                     if sprite.update():
                         self.player.health -= sprite.damage
-                
                 # Game-over condition
                 if self.player.health <= 0 or self.round == 100:
                     self.game_over = True
@@ -133,7 +99,7 @@ class Game:
             # Draw towers
             self.towers.draw(self.screen)
             # Draw enemies
-            self.enemy_sprites.draw(self.screen)
+            self.enemy_wave.enemy_sprites.draw(self.screen)
 
         # Draw map foreground
         self.map.foreground()

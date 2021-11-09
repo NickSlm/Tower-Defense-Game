@@ -1,7 +1,7 @@
 {
     "1":{
-        "enemy_order_type": ["red"],
-        "enemy_amount" : [10]
+        "enemy_order_type": ["red","blue"],
+        "enemy_amount" : [5,1]
     },
     "2":{
         "enemy_order_type": ["red","blue","red"],
