@@ -1,6 +1,8 @@
 import pygame
 import json
 from data.enemy.enemy import Enemy, Enemy2, Enemy3
+from data.enemy.spawn_enemy import EnemyWave
+from data.game.player import Player
 from data.map.map import Map
 from data.player.tower import Tower
 
@@ -16,14 +18,13 @@ class Game:
         self.screen = screen
         self.clock = pygame.time.Clock()
 
-        # Fonts
-        self.myFont = pygame.font.Font(r"D:\Games\Tower-Defense-Game\resources\fonts\IMMORTAL.ttf",24)
-
         # Create map and map objects/blockers
         self.map = Map(self.screen)
         self.blockers = self.map.blockers()
         self.enemy_path = self.map.checkpoints()
         
+        # Fonts
+        self.font = pygame.font.Font(r"D:\Games\Tower-Defense-Game\resources\fonts\IMMORTAL.ttf",24)
 
         # Game
         self.game_over = False
@@ -31,17 +32,14 @@ class Game:
         self.enemy_spawn = False
         self.round = 1
 
-
-
-        self.health= 100
-        self.health_icon = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\heart.png')
-        self.money = 250
-        self.money_icon = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\gold-ingots.png')
+        # Initialize Player
+        self.player = Player(self.screen)
 
         # Create player sprites
         self.towers = pygame.sprite.Group()
 
-        # Create wave instance
+        # Create wave
+        self.enemy_wave = EnemyWave()
         with open(r"D:\Games\Tower-Defense-Game\data\game\round.json") as json_file:
             self.data = json.load(json_file)
         self.enemy_index = 0 
@@ -79,6 +77,7 @@ class Game:
         This method is run each time through the frame. It
         updates positions and checks for collisions.
         """    
+        print("a")
         if not self.game_over:
             if self.round_running:
                 if self.enemies_spawn:
@@ -119,10 +118,10 @@ class Game:
                 # Update enemies
                 for sprite in self.enemy_sprites:
                     if sprite.update():
-                        self.health -= sprite.damage
+                        self.player.health -= sprite.damage
                 
                 # Game-over condition
-                if self.health <= 0 or self.round == 100:
+                if self.player.health <= 0 or self.round == 100:
                     self.game_over = True
 
     def draw(self):
@@ -142,20 +141,13 @@ class Game:
 
         # Draw game-over screen
         if self.game_over:
-            text = self.myFont.render("Game Over, click to restart", 1, (0,0,0))
+            text = self.font.render("Game Over, click to restart", 1, (0,0,0))
             center_x = (1920 // 2) - (text.get_width() // 2)
             center_y = (1088 // 4) - (text.get_height() // 2)
             self.screen.blit(text, [center_x, center_y])
 
         # Draw player's resources
-        self.health_text = self.myFont.render("Health: "+str(self.health), 1, (0,0,0))
-        self.money_text = self.myFont.render("Money: "+str(self.money), 1, (0,0,0))
-        self.round_text = self.myFont.render("Round: "+str(self.round), 1, (0,0,0))
-        self.screen.blit(self.health_text,(10,10))
-        self.screen.blit(self.health_icon,(10 + self.health_text.get_width(),10))
-        self.screen.blit(self.money_text,(10,40))
-        self.screen.blit(self.money_icon,(10 + self.money_text.get_width(),40))
-        self.screen.blit(self.round_text,(960 - (self.round_text.get_width()// 2),10))
+        self.player.draw_player_resources(self.round)
 
         pygame.display.flip()
         self.clock.tick(60)
