@@ -41,7 +41,7 @@
 </data>
  </layer>
  <objectgroup id="2" name="checkpoint" locked="1">
-  <object id="1" name="point" x="-48" y="544">
+  <object id="1" name="point" x="0" y="544">
    <point/>
   </object>
   <object id="3" name="point" x="768" y="544">

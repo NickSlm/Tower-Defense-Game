@@ -1,7 +1,7 @@
 {
     "1":{
-        "enemy_order_type": ["red","blue"],
-        "enemy_amount" : [5,1]
+        "enemy_order_type": ["red"],
+        "enemy_amount" : [10]
     },
     "2":{
         "enemy_order_type": ["red","blue","red"],
@@ -18,5 +18,9 @@
     "5":{
         "enemy_order_type": ["red","green","red","blue"],
         "enemy_amount" : [10,5,20,5]}
-
+    ,
+    "6":{
+        "enemy_order_type":["green","black","green"],
+        "enemy_amount": [5,4,3]
+    }
 }

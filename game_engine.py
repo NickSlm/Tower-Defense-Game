@@ -1,8 +1,7 @@
 import pygame
-import json
 from data.enemy.spawn_enemy import EnemyWave
-from data.game.player import Player
 from data.map.map import Map
+from data.player.player import Player
 from data.player.tower import Tower
 
 class Game:
@@ -28,7 +27,6 @@ class Game:
         # Game
         self.game_over = False
         self.round_running = False
-        self.enemy_spawn = False
         self.round = 1
 
         # Initialize Player
@@ -44,21 +42,19 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
-
             if event.type == pygame.KEYDOWN: 
                 mouse_x,mouse_y = pygame.mouse.get_pos()
                 if event.key == pygame.K_r:
-                    if not pygame.sprite.spritecollideany(Tower(mouse_x,mouse_y),self.blockers):
-                        if not pygame.sprite.spritecollideany(Tower(mouse_x,mouse_y),self.towers):
-                            self.towers.add(Tower(mouse_x,mouse_y))   
-
+                    tower = Tower(mouse_x,mouse_y)
+                    if not pygame.sprite.spritecollideany(tower,self.blockers):
+                        if not pygame.sprite.spritecollideany(tower,self.towers):
+                            self.towers.add(tower)   
                 if event.key == pygame.K_ESCAPE:
                     return False
                 if event.key == pygame.K_SPACE:
                     if self.round_running == False:
                         self.round_running = True
-                        self.enemy_wave.enemies_spawn = True
-
+                        self.enemy_wave.enemy_spawn = True
             if event.type == pygame.KEYUP:
                 pass
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -74,14 +70,16 @@ class Game:
         if not self.game_over:
             if self.round_running:
                 # Enemy spawn
-                if self.enemy_wave.enemies_spawn:
+                if self.enemy_wave.enemy_spawn:
                     self.enemy_wave.generate_enemies(self.round)
-                elif not self.enemy_wave.enemies_spawn:
+                elif not self.enemy_wave.enemy_spawn:
                     if not self.enemy_wave.enemy_sprites:
                         self.round_running = False
                         self.round += 1
                 # Update player towers
                 self.towers.update()
+                for tower in self.towers:
+                    tower.find_target(self.enemy_wave.enemy_sprites)
                 # Update enemies
                 for sprite in self.enemy_wave.enemy_sprites:
                     if sprite.update():
@@ -89,6 +87,8 @@ class Game:
                 # Game-over condition
                 if self.player.health <= 0 or self.round == 100:
                     self.game_over = True
+        print(self.enemy_wave.enemy_sprites)
+
 
     def draw(self):
         """ Draw everything on the screen for the game. """
@@ -104,7 +104,6 @@ class Game:
         # Draw map foreground
         self.map.foreground()
         
-
         # Draw game-over screen
         if self.game_over:
             text = self.font.render("Game Over, click to restart", 1, (0,0,0))
