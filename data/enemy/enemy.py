@@ -25,8 +25,10 @@ class Enemy(pygame.sprite.Sprite):
         self.speed = 2
         self.money = 5
 
+        self.direction = None
+
         self.current_sprite = 0
-        self.elapsed_time = None
+        
         self.image = self.walk_right[self.current_sprite]
         self.height = self.image.get_height()
         self.width = self.image.get_width()
@@ -41,32 +43,36 @@ class Enemy(pygame.sprite.Sprite):
         if state == "left":
             if int(self.current_sprite) >= len(self.walk_left):
                 self.current_sprite = 0
-            self.image = self.walk_left[int(self.current_sprite)]            
+            self.image = self.walk_left[int(self.current_sprite)]
+        if state == "top":
+            pass
+        if state == "down":
+            pass           
 
     def update(self):
         if self.checkpoints:
             current_point = ((self.rect.centerx - self.checkpoints[0][0]),(self.rect.centery - (self.checkpoints[0][1] - (self.height //3))))
             if self.rect.centerx < self.checkpoints[0][0]:
+                self.direction = "right"
                 self.sprite_animation("right")
                 self.rect.centerx += self.speed
             if self.rect.centerx > self.checkpoints[0][0]:
+                self.direction = "left"
                 self.sprite_animation("left")
                 self.rect.centerx -= self.speed
             if self.rect.centery < self.checkpoints[0][1] - (self.height // 3):
-                self.sprite_animation("right")
+                self.direction = "down"
+                self.sprite_animation("down")
                 self.rect.centery += self.speed
             if self.rect.centery > self.checkpoints[0][1] - (self.height // 3):
-                self.sprite_animation("right")
+                self.direction = "top"
+                self.sprite_animation("top")
                 self.rect.centery -= self.speed
             if (current_point[0] // self.speed, current_point[1] // self.speed) == (0,0):
                 self.checkpoints = self.checkpoints[1:]
         else:
             self.kill()
             return True
-
-        if self.hp <= 0:
-            self.kill()
-
         return False
 
 
@@ -102,26 +108,26 @@ class Enemy2(pygame.sprite.Sprite):
         if self.checkpoints:
             current_point = ((self.rect.centerx - self.checkpoints[0][0]),(self.rect.centery - (self.checkpoints[0][1] - (self.height //3))))
             if self.rect.centerx < self.checkpoints[0][0]:
+                self.direction = "right"
                 self.sprite_animation("right")
                 self.rect.centerx += self.speed
             if self.rect.centerx > self.checkpoints[0][0]:
+                self.direction = "left"
                 self.sprite_animation("left")
                 self.rect.centerx -= self.speed
             if self.rect.centery < self.checkpoints[0][1] - (self.height // 3):
-                self.sprite_animation("right")
+                self.direction = "down"
+                self.sprite_animation("down")
                 self.rect.centery += self.speed
             if self.rect.centery > self.checkpoints[0][1] - (self.height // 3):
-                self.sprite_animation("right")
+                self.direction = "top"
+                self.sprite_animation("top")
                 self.rect.centery -= self.speed
             if (current_point[0] // self.speed, current_point[1] // self.speed) == (0,0):
                 self.checkpoints = self.checkpoints[1:]
         else:
             self.kill()
             return True
-
-        if self.hp <= 0:
-            self.kill()
-            
         return False
 
 class Enemy3(pygame.sprite.Sprite):
@@ -136,6 +142,7 @@ class Enemy3(pygame.sprite.Sprite):
         self.money = 20
 
         self.current_sprite = 0
+
         self.image = self.walk_right[self.current_sprite]
         self.height = self.image.get_height()
         self.width = self.image.get_width()
@@ -154,28 +161,28 @@ class Enemy3(pygame.sprite.Sprite):
 
     def update(self):
         if self.checkpoints:
-            current_point = ((self.rect.centerx - self.checkpoints[0][0]),(self.rect.centery - (self.checkpoints[0][1] - (self.height // 3))))
+            current_point = ((self.rect.centerx - self.checkpoints[0][0]),(self.rect.centery - (self.checkpoints[0][1] - (self.height //3))))
             if self.rect.centerx < self.checkpoints[0][0]:
+                self.direction = "right"
                 self.sprite_animation("right")
                 self.rect.centerx += self.speed
             if self.rect.centerx > self.checkpoints[0][0]:
+                self.direction = "left"
                 self.sprite_animation("left")
                 self.rect.centerx -= self.speed
             if self.rect.centery < self.checkpoints[0][1] - (self.height // 3):
-                self.sprite_animation("right")
+                self.direction = "down"
+                self.sprite_animation("down")
                 self.rect.centery += self.speed
             if self.rect.centery > self.checkpoints[0][1] - (self.height // 3):
-                self.sprite_animation("right")
+                self.direction = "top"
+                self.sprite_animation("top")
                 self.rect.centery -= self.speed
             if (current_point[0] // self.speed, current_point[1] // self.speed) == (0,0):
                 self.checkpoints = self.checkpoints[1:]
         else:
             self.kill()
             return True
-
-        if self.hp <= 0:
-            self.kill()
-
         return False
 
 class Enemy4(pygame.sprite.Sprite):
@@ -188,8 +195,10 @@ class Enemy4(pygame.sprite.Sprite):
         self.damage = 10
         self.speed = 2
         self.money = 40
+        self.type = None
 
         self.current_sprite = 0
+
         self.image = self.walk_right[self.current_sprite]
         self.rect = self.image.get_rect(center=(self.checkpoints[0][0],self.checkpoints[0][1] - (self.image.get_height() // 3)))
 
@@ -209,26 +218,26 @@ class Enemy4(pygame.sprite.Sprite):
 
     def update(self):
         if self.checkpoints:
-            current_point = ((self.rect.centerx - self.checkpoints[0][0]),(self.rect.centery - (self.checkpoints[0][1] - (self.height // 3))))
+            current_point = ((self.rect.centerx - self.checkpoints[0][0]),(self.rect.centery - (self.checkpoints[0][1] - (self.height //3))))
             if self.rect.centerx < self.checkpoints[0][0]:
+                self.direction = "right"
                 self.sprite_animation("right")
                 self.rect.centerx += self.speed
             if self.rect.centerx > self.checkpoints[0][0]:
+                self.direction = "left"
                 self.sprite_animation("left")
                 self.rect.centerx -= self.speed
             if self.rect.centery < self.checkpoints[0][1] - (self.height // 3):
-                self.sprite_animation("right")
+                self.direction = "down"
+                self.sprite_animation("down")
                 self.rect.centery += self.speed
             if self.rect.centery > self.checkpoints[0][1] - (self.height // 3):
-                self.sprite_animation("right")
+                self.direction = "top"
+                self.sprite_animation("top")
                 self.rect.centery -= self.speed
             if (current_point[0] // self.speed, current_point[1] // self.speed) == (0,0):
                 self.checkpoints = self.checkpoints[1:]
         else:
             self.kill()
             return True
-
-        if self.hp <= 0:
-            self.kill()
-
         return False

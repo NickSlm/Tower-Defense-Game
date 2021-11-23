@@ -21,6 +21,7 @@ class Game:
         self.blockers = self.map.blockers()
         self.enemy_path = self.map.checkpoints()
         
+        self.dt = 0
         # Fonts
         self.font = pygame.font.Font(r"D:\Games\Tower-Defense-Game\resources\fonts\IMMORTAL.ttf",24)
 
@@ -34,6 +35,7 @@ class Game:
 
         # Create player sprites
         self.towers = pygame.sprite.Group()
+        self.bullets = pygame.sprite.Group()
 
         # Create wave
         self.enemy_wave = EnemyWave(self.enemy_path)
@@ -43,12 +45,16 @@ class Game:
             if event.type == pygame.QUIT:
                 return False
             if event.type == pygame.KEYDOWN: 
-                mouse_x,mouse_y = pygame.mouse.get_pos()
+                if event.key == pygame.K_p:
+                    self.__init__(self.screen)
                 if event.key == pygame.K_r:
-                    tower = Tower(mouse_x,mouse_y)
+                    mouse_x,mouse_y = pygame.mouse.get_pos()
+                    tower = Tower(mouse_x,mouse_y,self.bullets)
                     if not pygame.sprite.spritecollideany(tower,self.blockers):
                         if not pygame.sprite.spritecollideany(tower,self.towers):
-                            self.towers.add(tower)   
+                            if self.player.money >= 0 + tower.cost:
+                                self.towers.add(tower)
+                                self.player.money -= tower.cost   
                 if event.key == pygame.K_ESCAPE:
                     return False
                 if event.key == pygame.K_SPACE:
@@ -66,9 +72,18 @@ class Game:
         """
         This method is run each time through the frame. It
         updates positions and checks for collisions.
-        """    
+        """   
         if not self.game_over:
+
+            # Update player towers 
+            self.towers.update(self.dt,self.enemy_wave.enemy_sprites)
+
+
             if self.round_running:
+                
+
+
+
                 # Enemy spawn
                 if self.enemy_wave.enemy_spawn:
                     self.enemy_wave.generate_enemies(self.round)
@@ -76,19 +91,25 @@ class Game:
                     if not self.enemy_wave.enemy_sprites:
                         self.round_running = False
                         self.round += 1
-                # Update player towers
-                self.towers.update()
-                for tower in self.towers:
-                    tower.find_target(self.enemy_wave.enemy_sprites)
+               
                 # Update enemies
                 for sprite in self.enemy_wave.enemy_sprites:
                     if sprite.update():
                         self.player.health -= sprite.damage
+
+                    if sprite.hp <= 0:
+                        self.player.money += sprite.money
+                        sprite.kill()
+
+                # Update bullets
+                for bullet in self.bullets:
+                    if pygame.sprite.spritecollideany(bullet,self.enemy_wave.enemy_sprites):
+                        bullet.kill()
+                self.bullets.update()
+
                 # Game-over condition
                 if self.player.health <= 0 or self.round == 100:
                     self.game_over = True
-        print(self.enemy_wave.enemy_sprites)
-
 
     def draw(self):
         """ Draw everything on the screen for the game. """
@@ -98,6 +119,9 @@ class Game:
         if not self.game_over:
             # Draw towers
             self.towers.draw(self.screen)
+            self.bullets.draw(self.screen)
+            for tower in self.towers:
+                tower.draw_range(self.screen)
             # Draw enemies
             self.enemy_wave.enemy_sprites.draw(self.screen)
 
@@ -115,6 +139,4 @@ class Game:
         self.player.draw_player_resources(self.round)
 
         pygame.display.flip()
-        self.clock.tick(60)
-
-
+        self.dt = self.clock.tick(60)
