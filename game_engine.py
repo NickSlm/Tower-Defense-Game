@@ -2,7 +2,6 @@ import pygame
 from data.enemy.spawn_enemy import EnemyWave
 from data.map.map import Map
 from data.player.player import Player
-from data.player.tower import Tower
 
 class Game:
     """
@@ -33,36 +32,29 @@ class Game:
         # Initialize Player
         self.player = Player(self.screen)
 
-        # Create player sprites
-        self.towers = pygame.sprite.Group()
-        self.bullets = pygame.sprite.Group()
-
         # Create wave
         self.enemy_wave = EnemyWave(self.enemy_path)
 
     def events(self):
         for event in pygame.event.get():
+            # handles player events
+            self.player.events(event,self.blockers)
+            # 
             if event.type == pygame.QUIT:
                 return False
             if event.type == pygame.KEYDOWN: 
                 if event.key == pygame.K_p:
                     self.__init__(self.screen)
-                if event.key == pygame.K_r:
-                    mouse_x,mouse_y = pygame.mouse.get_pos()
-                    tower = Tower(mouse_x,mouse_y,self.bullets)
-                    if not pygame.sprite.spritecollideany(tower,self.blockers):
-                        if not pygame.sprite.spritecollideany(tower,self.towers):
-                            if self.player.money >= 0 + tower.cost:
-                                self.towers.add(tower)
-                                self.player.money -= tower.cost   
+
                 if event.key == pygame.K_ESCAPE:
                     return False
+                    
                 if event.key == pygame.K_SPACE:
                     if self.round_running == False:
                         self.round_running = True
                         self.enemy_wave.enemy_spawn = True
-            if event.type == pygame.KEYUP:
-                pass
+
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.game_over:
                     self.__init__(self.screen)  
@@ -76,14 +68,10 @@ class Game:
         if not self.game_over:
 
             # Update player towers 
-            self.towers.update(self.dt,self.enemy_wave.enemy_sprites)
-
+            self.player.towers.update(self.dt,self.enemy_wave.enemy_sprites)
+            self.player.bullets.update()
 
             if self.round_running:
-                
-
-
-
                 # Enemy spawn
                 if self.enemy_wave.enemy_spawn:
                     self.enemy_wave.generate_enemies(self.round)
@@ -96,21 +84,21 @@ class Game:
                 for sprite in self.enemy_wave.enemy_sprites:
                     if sprite.update():
                         self.player.health -= sprite.damage
-
                     if sprite.hp <= 0:
                         self.player.money += sprite.money
+                        for tower in self.player.towers:
+                            tower.xp += sprite.xp
                         sprite.kill()
 
-                # Update bullets
-                for bullet in self.bullets:
+                # Check projectile collision
+                for bullet in self.player.bullets:
                     if pygame.sprite.spritecollideany(bullet,self.enemy_wave.enemy_sprites):
-                        bullet.kill()
-                self.bullets.update()
+                        pygame.sprite.spritecollideany(bullet,self.enemy_wave.enemy_sprites).hp -= bullet.DAMAGE
+                        bullet.kill()                   
 
                 # Game-over condition
                 if self.player.health <= 0 or self.round == 100:
                     self.game_over = True
-
     def draw(self):
         """ Draw everything on the screen for the game. """
         # Draw map background
@@ -118,10 +106,11 @@ class Game:
 
         if not self.game_over:
             # Draw towers
-            self.towers.draw(self.screen)
-            self.bullets.draw(self.screen)
-            for tower in self.towers:
+            self.player.towers.draw(self.screen)
+            self.player.bullets.draw(self.screen)
+            for tower in self.player.towers:
                 tower.draw_range(self.screen)
+
             # Draw enemies
             self.enemy_wave.enemy_sprites.draw(self.screen)
 

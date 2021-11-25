@@ -1,37 +1,42 @@
 import pygame
 import math
 
+class Projectile(pygame.sprite.Sprite):
+    def __init__(self,tower_pos, target, attack_speed, damage):
+        super(Projectile,self).__init__()
 
-
-
-class Bullet(pygame.sprite.Sprite):
-    def __init__(self,tower_pos,target, angle):
-        super(Bullet,self).__init__()
-
-        self.SPEED = 10
-
-        offset = pygame.Vector2(10,0).rotate(angle)
-        self.pos = pygame.Vector2(tower_pos) + offset
-
-        self.tower_angle = angle
+        self.SPEED = attack_speed
+        self.DAMAGE = damage
 
         self.target = target
 
+        x, y = pygame.Vector2(target.rect.center) - tower_pos
+        self.angle = math.degrees(math.atan2(y,x))
 
-        self.image = pygame.Surface((16, 16), pygame.SRCALPHA)
-        self.image.fill((255,0,0))
+        offset = pygame.Vector2(10,0).rotate(self.angle)
+        self.pos = pygame.Vector2(tower_pos) + offset
 
+        self.image = pygame.Surface((16,16))
+        self.image.fill((58,58,58))
         self.rect = self.image.get_rect(center=self.pos)
 
-        self.velocity = pygame.Vector2(10,0)
-        self.velocity.rotate_ip(self.tower_angle)
+        self.velocity = pygame.Vector2(self.SPEED,0)
+        self.velocity.rotate_ip(self.angle)
 
+    def sprite_animation(self):
+        pass
 
     def update(self):
         self.pos += self.velocity
         self.rect.center = self.pos
+        
+        if self.rect.top < 0 or self.rect.top > 1088:
+            self.kill()
 
-
+class HomingProjectile(pygame.sprite.Sprite):
+    def __init__(self):
+        super(HomingProjectile,self).__init__()
+        pass
 
 class Tower(pygame.sprite.Sprite):
     def __init__(self,pos_x,pos_y,bullets):
@@ -41,22 +46,25 @@ class Tower(pygame.sprite.Sprite):
         self.pos_y = pos_y
         self.bullets = bullets
 
-
         self.timer = 0
 
         self.hover = False
+        self.clicked = False
 
         self.attack_range = 256      
-        self.attack_cooldown = 1000
+        self.attack_cooldown = 500
+        self.attack_speed = 15
         self.damage = 1
         self.cost = 50
 
         self.lvl = 1
-        self.experience = 0 
+        self.xp = 0 
+        self.xp_required = 100
+
+        self.skill_point = 0
 
         self.priority = None
         
-        self.angle = 0
         self.image = pygame.Surface((64,64))
         self.image.fill((255,0,0))
         self.rect = self.image.get_rect(center=(pos_x,pos_y))
@@ -71,7 +79,11 @@ class Tower(pygame.sprite.Sprite):
         pass
 
     def level_up(self):
-        pass
+        if self.xp >= self.xp_required:
+            self.lvl += 1
+            self.skill_point += 1
+            self.xp = 0
+            self.xp_required *= 1.5  
 
     def find_nearest_target(self,enemy_sprites):
         target = [self.attack_range,None]
@@ -86,21 +98,22 @@ class Tower(pygame.sprite.Sprite):
 
     def shoot(self,target):
         if not target == None:
-            x, y = pygame.Vector2(target.rect.center) - self.rect.center
-            self.angle = math.degrees(math.atan2(y,x))
-            self.bullets.add(Bullet((self.rect.centerx,self.rect.centery),target, self.angle))
+            self.bullets.add(Projectile(self.rect.center, target, self.attack_speed, self.damage))
  
     def update(self,dt,enemy_sprites):
-        """
-        """
+        # Show attack range on hover
         if self.rect.collidepoint(pygame.mouse.get_pos()):
             self.hover = True
         else:
             self.hover = False
 
+        # Cooldown between attacks
         self.timer += dt
         if self.timer   >= self.attack_cooldown:
             self.timer -= self.attack_cooldown
             target = self.find_nearest_target(enemy_sprites)
             self.shoot(target)
+        
+        # Tower Levels
+        self.level_up()
                     
