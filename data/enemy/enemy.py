@@ -23,7 +23,7 @@ class Enemy(pygame.sprite.Sprite):
         self.hp = 1
         self.damage = 1
         self.speed = 2
-        self.money = 5
+        self.money = 2
         self.xp = 1
 
         self.direction = None
@@ -86,7 +86,7 @@ class Enemy2(pygame.sprite.Sprite):
         self.hp = 5
         self.damage = 10
         self.speed = 2
-        self.money = 10
+        self.money = 4
         self.xp = 2
 
         self.current_sprite = 0
@@ -141,7 +141,7 @@ class Enemy3(pygame.sprite.Sprite):
         self.hp = 4
         self.damage = 4
         self.speed = 4
-        self.money = 20
+        self.money = 8
         self.xp = 4
 
         self.current_sprite = 0
@@ -197,7 +197,7 @@ class Enemy4(pygame.sprite.Sprite):
         self.hp = 15
         self.damage = 10
         self.speed = 2
-        self.money = 40
+        self.money = 16
         self.xp = 8
         self.type = None
 

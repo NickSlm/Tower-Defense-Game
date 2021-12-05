@@ -1,5 +1,5 @@
 import pygame
-from data.player.tower import Tower
+from data.player.tower import DwarfHunter, DwarfSlayer
 
 
 
@@ -8,9 +8,10 @@ class Player:
     def __init__(self,screen):
         self.screen = screen
         self.health = 100
-        self.money = 50
+        self.money = 125
         self.health_icon = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\heart.png')
         self.money_icon = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\gold-ingots.png')
+        # self.inventory_img = pygame.image.load(r'')
         # Fonts
         self.font = pygame.font.Font(r"D:\Games\Tower-Defense-Game\resources\fonts\IMMORTAL.ttf",24)
 
@@ -33,14 +34,19 @@ class Player:
             # Summon towers
             mouse_x,mouse_y = pygame.mouse.get_pos()
             if event.key == pygame.K_q:
-                tower = Tower(mouse_x,mouse_y,self.bullets)
+                tower = DwarfHunter(mouse_x,mouse_y,self.bullets)
                 if not pygame.sprite.spritecollideany(tower,blockers):
                     if not pygame.sprite.spritecollideany(tower,self.towers):
                         if self.money >= 0 + tower.cost:
                             self.towers.add(tower)
                             self.money -= tower.cost
             if event.key == pygame.K_w:
-                pass
+                tower = DwarfSlayer(mouse_x,mouse_y,self.bullets)
+                if not pygame.sprite.spritecollideany(tower,blockers):
+                    if not pygame.sprite.spritecollideany(tower,self.towers):
+                        if self.money >= 0 + tower.cost:
+                            self.towers.add(tower)
+                            self.money -= tower.cost
             if event.key == pygame.K_e:
                 pass          
             if event.key == pygame.K_r:

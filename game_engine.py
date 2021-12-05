@@ -54,7 +54,6 @@ class Game:
                         self.round_running = True
                         self.enemy_wave.enemy_spawn = True
 
-
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.game_over:
                     self.__init__(self.screen)  
@@ -94,7 +93,7 @@ class Game:
                 for bullet in self.player.bullets:
                     if pygame.sprite.spritecollideany(bullet,self.enemy_wave.enemy_sprites):
                         pygame.sprite.spritecollideany(bullet,self.enemy_wave.enemy_sprites).hp -= bullet.DAMAGE
-                        bullet.kill()                   
+                        bullet.kill()
 
                 # Game-over condition
                 if self.player.health <= 0 or self.round == 100:
@@ -108,8 +107,6 @@ class Game:
             # Draw towers
             self.player.towers.draw(self.screen)
             self.player.bullets.draw(self.screen)
-            for tower in self.player.towers:
-                tower.draw_range(self.screen)
 
             # Draw enemies
             self.enemy_wave.enemy_sprites.draw(self.screen)
@@ -117,6 +114,11 @@ class Game:
         # Draw map foreground
         self.map.foreground()
         
+        # Draw tower profile stats/talents
+        for tower in self.player.towers:
+            tower.draw_range(self.screen)
+            tower.draw_stats(self.screen)
+
         # Draw game-over screen
         if self.game_over:
             text = self.font.render("Game Over, click to restart", 1, (0,0,0))
