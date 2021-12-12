@@ -4,6 +4,8 @@ import math
 
 from pygame import image
 
+from data.player.projectile import Arrow
+
 FONT_COLOR = (255,255,255)
 
 
@@ -23,6 +25,7 @@ def create_tower_profile(screen,name,lvl,damage,attack_speed,skill_point,icon):
     skill_point_text = font.render("Skill Point: "+str(skill_point),1, (0,0,0))            
 
     stats_srf = pygame.Surface((profile_width,profile_height),pygame.SRCALPHA)
+    stats_rect = stats_srf.get_rect(topleft=(((screen.get_width() // 2) - (stats_srf.get_width()// 2),screen.get_height() - stats_srf.get_height())))
     stats_srf.fill((58,58,58,226))
     stats_srf.blit(icon,(0,0))
     stats_srf.blit(name_text,(((icon_width + ((profile_width - icon_width) // 2) ) - (name_text.get_width() // 2),0)))
@@ -36,8 +39,9 @@ def create_tower_profile(screen,name,lvl,damage,attack_speed,skill_point,icon):
     stats_srf.blit(skill_point_text,(icon_width + offset * 2, icon_height - skill_point_text.get_height()))
     # Description border
     pygame.draw.rect(stats_srf,(0,0,0),[offset, icon_height + offset, profile_width - offset * 2, profile_height - icon_height - offset],1)
-    screen.blit(stats_srf,((960 - (stats_srf.get_width()// 2),1088 - stats_srf.get_height())))
+    screen.blit(stats_srf,stats_rect)
 
+    return stats_rect
 
 def find_nearest_target(enemy_sprites, tower):
     target = [tower.attack_range,None]
@@ -61,40 +65,6 @@ def find_all_targets(enemy_sprites, tower):
         if distance <= tower.attack_range:
             target.append(enemy)
     return target
-
-class Arrow(pygame.sprite.Sprite):
-    arrow = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\sprites\projectiles\towerDefense_tile251.png')
-    arrow = pygame.transform.rotate(pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\sprites\projectiles\towerDefense_tile251.png'),-90)
-    def __init__(self,tower_pos, target, attack_speed, damage):
-        super(Arrow,self).__init__()
-
-        self.SPEED = attack_speed
-        self.DAMAGE = damage
-
-        self.target = target
-
-        x, y = pygame.Vector2(target.rect.center) - tower_pos
-        self.angle = math.degrees(math.atan2(y,x))
-
-        offset = pygame.Vector2(10,0).rotate(self.angle)
-        self.pos = pygame.Vector2(tower_pos) + offset
-
-        self.image = pygame.transform.rotate(self.arrow,-self.angle)
-
-        self.rect = self.image.get_rect(center=self.pos)
-        self.velocity = pygame.Vector2(self.SPEED,0)
-        self.velocity.rotate_ip(self.angle)
-
-    def sprite_animation(self):
-        pass
-
-    def update(self):
-        self.pos += self.velocity
-        self.rect.center = self.pos
-        
-        if self.rect.top < 0 or self.rect.top > 1088:
-            self.kill()
-
 
 class DwarfHunter(pygame.sprite.Sprite):
     def __init__(self,pos_x,pos_y,bullets):
@@ -124,6 +94,8 @@ class DwarfHunter(pygame.sprite.Sprite):
 
         self.skill_point = 0
         
+
+        self.stats_rect = None
         self.image = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\towerDefense_tile181.png')
         self.rect = self.image.get_rect(center=(pos_x,pos_y))
 
@@ -133,14 +105,6 @@ class DwarfHunter(pygame.sprite.Sprite):
             pygame.draw.circle(range_image, (58,58,58,30), (self.attack_range, self.attack_range), self.attack_range)
             screen.blit(range_image, (self.pos_x - self.attack_range, self.pos_y - self.attack_range))
 
-    def draw_stats(self,screen):
-        if self.clicked:
-            create_tower_profile(screen,self.name,self.lvl,self.damage,self.attack_speed,self.skill_point,self.icon)
-            talents_srf = pygame.Surface((264,132),pygame.SRCALPHA)
-            talents_srf.fill((0,0,0,128))
-            self.talents_rect = talents_srf.get_rect(center= (960 + 112,1088- talents_srf.get_height()))
-            screen.blit(talents_srf,(960 + 112,1088- talents_srf.get_height()))
-            
     def sprite_animation(self):
         pass
 
@@ -154,25 +118,11 @@ class DwarfHunter(pygame.sprite.Sprite):
     def attack(self,target):
         if not target == None:
             self.bullets.add(Arrow(self.rect.center, target, self.projectile_speed, self.damage))
- 
+
     def update(self,dt,enemy_sprites):
-        # Show attack range on hover
-        if self.rect.collidepoint(pygame.mouse.get_pos()):
-            self.hover = True
-        else:
-            self.hover = False
-
-
-        if pygame.mouse.get_pressed()[0]:
-            if self.rect.collidepoint(pygame.mouse.get_pos()):
-                self.clicked = True
-
-        
-        # Level up tower skills
-
         # Cooldown between attacks
         self.timer += dt
-        if self.timer   >= self.attack_speed:
+        if self.timer >= self.attack_speed:
             self.timer -= self.attack_speed
             target = find_nearest_target(enemy_sprites,self)
             self.attack(target)
@@ -208,7 +158,8 @@ class DwarfSlayer(pygame.sprite.Sprite):
         self.skill_point = 0
 
         self.priority = None
-        
+
+        self.stats_rect = None
         self.image = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0002\towerDefense_tile180.png')
         self.rect = self.image.get_rect(center=(pos_x,pos_y))
 
@@ -217,10 +168,6 @@ class DwarfSlayer(pygame.sprite.Sprite):
             range_image = pygame.Surface((self.attack_range * 2,self.attack_range * 2), pygame.SRCALPHA)
             pygame.draw.circle(range_image, (58,58,58,30), (self.attack_range, self.attack_range), self.attack_range)
             screen.blit(range_image, (self.pos_x - self.attack_range, self.pos_y - self.attack_range))
-
-    def draw_stats(self,screen):
-        if self.clicked:
-            create_tower_profile(screen,self.name,self.lvl,self.damage,self.attack_speed,self.skill_point,self.icon)
 
     def sprite_animation(self):
         pass
@@ -235,29 +182,11 @@ class DwarfSlayer(pygame.sprite.Sprite):
     def attack(self,target):
         if not target == None:
             self.bullets.add(Arrow(self.rect.center, target, self.projectile_speed, self.damage))
- 
+
     def update(self,dt,enemy_sprites):
-        # Show attack range on hover
-        # if self.rect.collidepoint(pygame.mouse.get_pos()):
-        #     self.hover = True
-        # else:
-        #     self.hover = False
-        #     if pygame.mouse.get_pressed()[0]:
-        #         self.clicked = False
-
-        # if pygame.mouse.get_pressed()[0]:
-        #     if self.rect.collidepoint(pygame.mouse.get_pos()):
-        #         self.clicked = True
-        #     if not self.rect.collidepoint(pygame.mouse.get_pos()) or not self.
-
-
-        
-
-        # Level up tower skills
-
         # Cooldown between attacks
         self.timer += dt
-        if self.timer   >= self.attack_speed:
+        if self.timer >= self.attack_speed:
             self.timer -= self.attack_speed
             target = find_nearest_target(enemy_sprites,self)
             self.attack(target)

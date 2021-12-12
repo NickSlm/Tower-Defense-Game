@@ -20,6 +20,7 @@ class Game:
         self.blockers = self.map.blockers()
         self.enemy_path = self.map.checkpoints()
         
+        # Delta time
         self.dt = 0
         # Fonts
         self.font = pygame.font.Font(r"D:\Games\Tower-Defense-Game\resources\fonts\IMMORTAL.ttf",24)
@@ -36,12 +37,13 @@ class Game:
         self.enemy_wave = EnemyWave(self.enemy_path)
 
     def events(self):
+        # Handling player events
         for event in pygame.event.get():
-            # handles player events
             self.player.events(event,self.blockers)
-            # 
+
             if event.type == pygame.QUIT:
                 return False
+
             if event.type == pygame.KEYDOWN: 
                 if event.key == pygame.K_p:
                     self.__init__(self.screen)
@@ -117,7 +119,6 @@ class Game:
         # Draw tower profile stats/talents
         for tower in self.player.towers:
             tower.draw_range(self.screen)
-            tower.draw_stats(self.screen)
 
         # Draw game-over screen
         if self.game_over:
@@ -126,8 +127,8 @@ class Game:
             center_y = (1088 // 4) - (text.get_height() // 2)
             self.screen.blit(text, [center_x, center_y])
 
-        # Draw player's resources
-        self.player.draw_player_resources(self.round)
+        # Draw player's GUI
+        self.player.draw_gui(self.round)
 
         pygame.display.flip()
         self.dt = self.clock.tick(60)
