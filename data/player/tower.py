@@ -1,4 +1,5 @@
 from json import load
+from os import stat
 import pygame
 import math
 
@@ -6,9 +7,72 @@ from pygame import image
 
 from data.player.projectile import Arrow
 
-FONT_COLOR = (255,255,255)
+FONT_COLOR = (0,0,0)
 
 
+
+class TowerProfile:
+    def __init__(self,screen,name,lvl,damage,attack_speed,skill_point,icon):
+        font = pygame.font.Font(r"D:\Games\Tower-Defense-Game\resources\fonts\IMMORTAL.ttf",14)
+
+        self.screen = screen
+        self.name = name
+        self.lvl = lvl
+        self.damage = damage
+        self.attack_speed = attack_speed
+        self.skill_point = skill_point
+        self.icon = icon
+
+        self.profile_width = 224
+        self.profile_height = 196
+        icon_width,icon_height = self.icon.get_size()
+        self.offset = 4
+
+        self.icon_rect = icon.get_rect(topleft=(self.offset,self.offset))
+        
+        self.name_text = font.render(name, 1, FONT_COLOR)
+        self.name_text_rect = self.name_text.get_rect(topleft = (((self.profile_width -(self.profile_width - icon_width - self.offset)) + (self.profile_width - icon_width - self.offset) // 2) - self.name_text.get_width() // 2,self.offset))
+
+        self.lvl_text = font.render("Lvl: "+str(lvl), 1, FONT_COLOR)
+        self.lvl_text_rect = self.lvl_text.get_rect(topleft = (icon_width + self.offset * 2, self.name_text.get_height() + self.offset))
+
+        self.damage_text = font.render("Damage: "+str(damage), 1, FONT_COLOR)
+        self.damage_text_rect = self.damage_text.get_rect(topleft = self.lvl_text_rect.bottomleft)
+
+        self.attack_speed_text = font.render("AS: "+str(attack_speed // 500), 1, FONT_COLOR)
+        self.attack_speed_text_rect = self.attack_speed_text.get_rect(topleft = self.damage_text_rect.bottomleft)
+
+        self.skill_point_text = font.render("Skill Point: "+str(skill_point),1, FONT_COLOR)    
+        self.skill_point_text_rect = self.skill_point_text.get_rect(topleft = (icon_width + self.offset * 2,(icon_height + self.offset) - self.skill_point_text.get_height()))        
+
+        self.stats_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\tower_profile.png')
+        self.stats_rect = self.stats_srf.get_rect(topleft=(((screen.get_width() // 2) - (self.stats_srf.get_width()// 2),screen.get_height() - self.stats_srf.get_height())))
+
+        self.open_talents_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\open_talents.png')
+        self.open_talents_rect = self.open_talents_srf.get_rect(topleft=(1072,screen.get_height() - self.stats_srf.get_height() + 83))
+        # close_talents_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\close_talents.png')
+        # close_talents_rect = close_talents_srf.get_rect(topleft=open_talents_rect.bottomleft)
+
+
+    def create_tower_profile(self):
+        stats_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\tower_profile.png')
+        stats_rect = stats_srf.get_rect(topleft=(((self.screen.get_width() // 2) - (stats_srf.get_width()// 2),self.screen.get_height() - stats_srf.get_height())))
+        
+        stats_srf.blit(self.icon,self.icon_rect)
+        stats_srf.blit(self.name_text, self.name_text_rect)
+        # Stats border
+        pygame.draw.rect(stats_srf,(0,0,0),[self.icon_width + self.offset + 2, self.name_text.get_height() + self.offset, (self.profile_width - self.icon_width - (self.offset * 2 + 2)), self.icon_height - self.name_text.get_height()],1)
+        # Stats
+        stats_srf.blit(self.lvl_text,self.lvl_text_rect)
+        stats_srf.blit(self.damage_text,self.damage_text_rect)
+        stats_srf.blit(self.attack_speed_text,self.attack_speed_text_rect)
+        stats_srf.blit(self.skill_point_text,self.skill_point_text_rect)
+
+        self.screen.blit(stats_srf,stats_rect)
+        # If closed
+        self.screen.blit(self.open_talents_srf,self.open_talents_rect)
+        # If open
+        # screen.blit(close_talents_srf,close_talents_rect)
 
 def create_tower_profile(screen,name,lvl,damage,attack_speed,skill_point,icon):
     font = pygame.font.Font(r"D:\Games\Tower-Defense-Game\resources\fonts\IMMORTAL.ttf",14)
@@ -16,30 +80,48 @@ def create_tower_profile(screen,name,lvl,damage,attack_speed,skill_point,icon):
     profile_width = 224
     profile_height = 196
     icon_width,icon_height = icon.get_size()
-    offset = 2
+    offset = 4
+
+    icon_rect = icon.get_rect(topleft=(offset,offset))
 
     name_text = font.render(name, 1, FONT_COLOR)
-    lvl_text = font.render("Lvl: "+str(lvl), 1, (0,0,0))
-    damage_text = font.render("Damage: "+str(damage), 1, (0,0,0))
-    attack_speed_text = font.render("Attack Speed: "+str(attack_speed // 500), 1, (0,0,0))
-    skill_point_text = font.render("Skill Point: "+str(skill_point),1, (0,0,0))            
+    name_text_rect = name_text.get_rect(topleft = (((profile_width -(profile_width - icon_width - offset)) + (profile_width - icon_width - offset) // 2) - name_text.get_width() // 2,offset))
 
-    stats_srf = pygame.Surface((profile_width,profile_height),pygame.SRCALPHA)
+    lvl_text = font.render("Lvl: "+str(lvl), 1, FONT_COLOR)
+    lvl_text_rect = lvl_text.get_rect(topleft = (icon_width + offset * 2, name_text.get_height() + offset))
+
+    damage_text = font.render("Damage: "+str(damage), 1, FONT_COLOR)
+    damage_text_rect = damage_text.get_rect(topleft = lvl_text_rect.bottomleft)
+
+    attack_speed_text = font.render("AS: "+str(attack_speed), 1, FONT_COLOR)
+    attack_speed_text_rect = attack_speed_text.get_rect(topleft = damage_text_rect.bottomleft)
+
+    skill_point_text = font.render("Skill Point: "+str(skill_point),1, FONT_COLOR)    
+    skill_point_text_rect = skill_point_text.get_rect(topleft = (icon_width + offset * 2,(icon_height + offset) - skill_point_text.get_height()))        
+
+    stats_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\tower_profile.png')
     stats_rect = stats_srf.get_rect(topleft=(((screen.get_width() // 2) - (stats_srf.get_width()// 2),screen.get_height() - stats_srf.get_height())))
-    stats_srf.fill((58,58,58,226))
-    stats_srf.blit(icon,(0,0))
-    stats_srf.blit(name_text,(((icon_width + ((profile_width - icon_width) // 2) ) - (name_text.get_width() // 2),0)))
 
+    open_talents_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\open_talents.png')
+    open_talents_rect = open_talents_srf.get_rect(topleft=(1072,screen.get_height() - stats_srf.get_height() + 83))
+    # close_talents_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\close_talents.png')
+    # close_talents_rect = close_talents_srf.get_rect(topleft=open_talents_rect.bottomleft)
+
+    stats_srf.blit(icon,icon_rect)
+    stats_srf.blit(name_text, name_text_rect)
     # Stats border
-    pygame.draw.rect(stats_srf,(0,0,0),[icon_width + offset, name_text.get_height(), (profile_width - icon_width - (offset * 2)), icon_height - name_text.get_height()],1)
+    pygame.draw.rect(stats_srf,(0,0,0),[icon_width + offset + 2, name_text.get_height() + offset, (profile_width - icon_width - (offset * 2 + 2)), icon_height - name_text.get_height()],1)
     # Stats
-    stats_srf.blit(lvl_text,(icon_width + offset * 2, name_text.get_height()))
-    stats_srf.blit(damage_text,(icon_width + offset * 2, name_text.get_height() + lvl_text.get_height()))
-    stats_srf.blit(attack_speed_text,(icon_width + offset * 2, name_text.get_height() + lvl_text.get_height() + damage_text.get_height()))
-    stats_srf.blit(skill_point_text,(icon_width + offset * 2, icon_height - skill_point_text.get_height()))
-    # Description border
-    pygame.draw.rect(stats_srf,(0,0,0),[offset, icon_height + offset, profile_width - offset * 2, profile_height - icon_height - offset],1)
+    stats_srf.blit(lvl_text,lvl_text_rect)
+    stats_srf.blit(damage_text,damage_text_rect)
+    stats_srf.blit(attack_speed_text,attack_speed_text_rect)
+    stats_srf.blit(skill_point_text,skill_point_text_rect)
+
     screen.blit(stats_srf,stats_rect)
+    # If closed
+    screen.blit(open_talents_srf,open_talents_rect)
+    # If open
+    # screen.blit(close_talents_srf,close_talents_rect)
 
     return stats_rect
 
@@ -83,8 +165,8 @@ class DwarfHunter(pygame.sprite.Sprite):
 
         self.name = "Dwarf Hunter"
         self.attack_range = 256      
-        self.attack_speed = 500
-        self.projectile_speed = 10
+        self.attack_speed = 1
+        self.projectile_speed = 20
         self.damage = 1
         self.cost = 50
 
@@ -93,8 +175,11 @@ class DwarfHunter(pygame.sprite.Sprite):
         self.xp_required = 100
 
         self.skill_point = 0
-        
 
+        self.skill_tree = {"slow": 0,
+        "fire": 0,
+        "c": 1}
+        
         self.stats_rect = None
         self.image = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\towerDefense_tile181.png')
         self.rect = self.image.get_rect(center=(pos_x,pos_y))
@@ -113,20 +198,20 @@ class DwarfHunter(pygame.sprite.Sprite):
             self.lvl += 1
             self.skill_point += 1
             self.xp = 0
-            self.xp_required *= 1.5  
+            self.xp_required *= 1.5
 
     def attack(self,target):
         if not target == None:
-            self.bullets.add(Arrow(self.rect.center, target, self.projectile_speed, self.damage))
+            self.bullets.add(Arrow(self, target, self.projectile_speed, self.damage))
 
     def update(self,dt,enemy_sprites):
         # Cooldown between attacks
         self.timer += dt
-        if self.timer >= self.attack_speed:
-            self.timer -= self.attack_speed
+        if self.timer / 1000 >= self.attack_speed:
+            self.timer -= self.attack_speed * 1000
             target = find_nearest_target(enemy_sprites,self)
             self.attack(target)
-        
+
         # Tower Levels
         self.level_up()
 
@@ -134,6 +219,7 @@ class DwarfHunter(pygame.sprite.Sprite):
 class DwarfSlayer(pygame.sprite.Sprite):
     def __init__(self,pos_x,pos_y,bullets):
         super(DwarfSlayer,self).__init__()
+
         self.icon = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0002\icon\tower_0002.png')
 
         self.pos_x = pos_x
@@ -146,7 +232,7 @@ class DwarfSlayer(pygame.sprite.Sprite):
 
         self.name = "Dwarf Slayer"
         self.attack_range = 128      
-        self.attack_speed = 1000
+        self.attack_speed = 0.1
         self.projectile_speed = 20
         self.damage = 2
         self.cost = 75
@@ -184,10 +270,11 @@ class DwarfSlayer(pygame.sprite.Sprite):
             self.bullets.add(Arrow(self.rect.center, target, self.projectile_speed, self.damage))
 
     def update(self,dt,enemy_sprites):
+
         # Cooldown between attacks
         self.timer += dt
-        if self.timer >= self.attack_speed:
-            self.timer -= self.attack_speed
+        if self.timer / 1000 >= self.attack_speed:
+            self.timer -= self.attack_speed * 1000
             target = find_nearest_target(enemy_sprites,self)
             self.attack(target)
         

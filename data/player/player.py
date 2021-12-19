@@ -17,6 +17,7 @@ class GUI:
         self.health_icon = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\heart.png')
         self.money_icon = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\gold-ingots.png')
 
+        # Tower select menu buttons
         self.btn_1 = False
         self.btn_1_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button11.png')
         self.btn_1_rect = self.btn_1_srf.get_rect(topleft=(32, 32))
@@ -65,6 +66,13 @@ class GUI:
         self.btn_8_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button12.png')
         self.btn_8_pressed_rect = self.btn_8_pressed_srf.get_rect(topleft=(275, 113 + self.btn_pressed_offset))
 
+        # Start round button
+        self.start_btn = False
+        self.start_btn_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\start.png')
+        self.start_btn_rect = self.start_btn_srf.get_rect(topleft = (500,500))
+        self.start_btn_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\start_pressed.png')
+        self.start_btn_pressed_rect = self.start_btn_pressed_srf.get_rect(topleft = (500,506))
+
     def player_resources(self,round,health,money):
         health_text = self.font.render("Health: "+str(health), 1, TEXT_COLOR)
         money_text = self.font.render("Money: "+str(money), 1, TEXT_COLOR)
@@ -73,7 +81,7 @@ class GUI:
         self.screen.blit(self.health_icon,(self.text_offset + health_text.get_width(), self.text_offset))
         self.screen.blit(money_text,(self.text_offset, health_text.get_height() + self.text_offset))
         self.screen.blit(self.money_icon,(self.text_offset + money_text.get_width(), health_text.get_height() + self.text_offset))
-        self.screen.blit(round_text,((self.screen.get_width() // 2) - (round_text.get_width()// 2),self.text_offset))
+        self.screen.blit(round_text,((self.screen.get_width() // 2) - (round_text.get_width() // 2),self.text_offset))
 
     def tower_select_menu(self):
         self.menu = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\menu.png')
@@ -130,7 +138,7 @@ class Player:
 
         self.gui = GUI(self.screen)
 
-        self.show_menu = False
+        self.show_menu = True
 
         # Tower group
         self.towers = pygame.sprite.Group()
@@ -138,35 +146,39 @@ class Player:
 
     def draw_gui(self,round):
         # Player resources
-        self.gui.player_resources(round,self.health,self.money)
+        self.gui.player_resources(round, self.health, self.money)
         # Tower select menu
         if self.show_menu:
             self.gui.tower_select_menu()
         # Tower stats/talents
         for tower in self.towers:
             if tower.clicked:
-                tower.stats_rect = create_tower_profile(self.screen,tower.name,tower.lvl,tower.damage,tower.attack_speed,tower.skill_point,tower.icon)
+                tower.stats_rect = create_tower_profile(self.screen, tower.name, tower.lvl, tower.damage, tower.attack_speed, tower.skill_point, tower.icon)
+
+    def update(self):
+        # Show tower range on hover
+        for tower in self.towers:
+            if tower.rect.collidepoint(pygame.mouse.get_pos()):
+                tower.hover = True
+            else:
+                tower.hover = False
 
     def events(self,event,blockers):
         mouse_x,mouse_y = pygame.mouse.get_pos()
 
-        # Tower events
-        for tower in self.towers:
-            # Select tower
-            if event.type == pygame.MOUSEBUTTONUP:
+        if event.type == pygame.MOUSEBUTTONUP:
+            # Open tower profile
+            for tower in self.towers:
                 if tower.clicked == False:
                     if tower.rect.collidepoint((mouse_x,mouse_y)):
                         tower.clicked = True
                 elif tower.clicked == True:
                     if not tower.stats_rect.collidepoint((mouse_x,mouse_y)):
                         tower.clicked = False
-            # Hover on tower
-            if tower.rect.collidepoint(pygame.mouse.get_pos()):
-                tower.hover = True
-            else:
-                tower.hover = False
 
-        # 
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pass
+                    
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_q:
                 self.gui.btn_1 = False

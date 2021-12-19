@@ -19,9 +19,11 @@ class Game:
         self.map = Map(self.screen)
         self.blockers = self.map.blockers()
         self.enemy_path = self.map.checkpoints()
-        
-        # Delta time
+
+        # Time
         self.dt = 0
+        self.damaga_time_delay = 0
+
         # Fonts
         self.font = pygame.font.Font(r"D:\Games\Tower-Defense-Game\resources\fonts\IMMORTAL.ttf",24)
 
@@ -39,6 +41,7 @@ class Game:
     def events(self):
         # Handling player events
         for event in pygame.event.get():
+
             self.player.events(event,self.blockers)
 
             if event.type == pygame.QUIT:
@@ -65,14 +68,15 @@ class Game:
         """
         This method is run each time through the frame. It
         updates positions and checks for collisions.
-        """   
+        """
+        self.player.update()
         if not self.game_over:
-
             # Update player towers 
             self.player.towers.update(self.dt,self.enemy_wave.enemy_sprites)
-            self.player.bullets.update()
+            self.player.bullets.update(self.dt)
 
             if self.round_running:
+
                 # Enemy spawn
                 if self.enemy_wave.enemy_spawn:
                     self.enemy_wave.generate_enemies(self.round)
@@ -80,7 +84,7 @@ class Game:
                     if not self.enemy_wave.enemy_sprites:
                         self.round_running = False
                         self.round += 1
-               
+
                 # Update enemies
                 for sprite in self.enemy_wave.enemy_sprites:
                     if sprite.update():
@@ -98,7 +102,7 @@ class Game:
                         bullet.kill()
 
                 # Game-over condition
-                if self.player.health <= 0 or self.round == 100:
+                if self.player.health <= 0 or self.round == 7:
                     self.game_over = True
     def draw(self):
         """ Draw everything on the screen for the game. """
@@ -109,7 +113,6 @@ class Game:
             # Draw towers
             self.player.towers.draw(self.screen)
             self.player.bullets.draw(self.screen)
-
             # Draw enemies
             self.enemy_wave.enemy_sprites.draw(self.screen)
 
@@ -124,11 +127,12 @@ class Game:
         if self.game_over:
             text = self.font.render("Game Over, click to restart", 1, (0,0,0))
             center_x = (1920 // 2) - (text.get_width() // 2)
-            center_y = (1088 // 4) - (text.get_height() // 2)
+            center_y = (1088 // 3) - (text.get_height() // 2)
             self.screen.blit(text, [center_x, center_y])
 
         # Draw player's GUI
         self.player.draw_gui(self.round)
 
         pygame.display.flip()
+
         self.dt = self.clock.tick(60)

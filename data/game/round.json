@@ -1,11 +1,11 @@
 {
     "1":{
         "enemy_order_type": ["red"],
-        "enemy_amount" : [20]
+        "enemy_amount" : [10]
     },
     "2":{
         "enemy_order_type": ["red","blue","red"],
-        "enemy_amount" : [20,10,20]
+        "enemy_amount" : [35,20,35]
     },
     "3":{
         "enemy_order_type": ["blue","red","green"],
@@ -17,10 +17,10 @@
     },
     "5":{
         "enemy_order_type": ["red","green","red","blue"],
-        "enemy_amount" : [10,5,20,5]}
+        "enemy_amount" : [10,10,20,25]}
     ,
     "6":{
         "enemy_order_type":["green","black","green"],
-        "enemy_amount": [5,4,3]
+        "enemy_amount": [25,10,25]
     }
 }
