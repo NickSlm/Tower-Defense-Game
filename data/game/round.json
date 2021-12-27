@@ -1,15 +1,15 @@
 {
     "1":{
         "enemy_order_type": ["red"],
-        "enemy_amount" : [10]
+        "enemy_amount" : [20]
     },
     "2":{
-        "enemy_order_type": ["red","blue","red"],
-        "enemy_amount" : [35,20,35]
+        "enemy_order_type": ["red","blue"],
+        "enemy_amount" : [35,5]
     },
     "3":{
-        "enemy_order_type": ["blue","red","green"],
-        "enemy_amount" : [15,35,10]
+        "enemy_order_type": ["red","red","blue"],
+        "enemy_amount" : [60,35,10]
     },
     "4":{
         "enemy_order_type": ["green","blue","green"],
