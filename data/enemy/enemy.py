@@ -86,7 +86,7 @@ class Enemy2(pygame.sprite.Sprite):
         self.hp = 5
         self.damage = 10
         self.speed = 2
-        self.money = 4
+        self.money = 6
         self.xp = 2
 
         self.current_sprite = 0

@@ -4,11 +4,11 @@ import math
 class Arrow(pygame.sprite.Sprite):
     arrow = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\sprites\projectiles\Arrow.png')
     arrow = pygame.transform.rotate(pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\sprites\projectiles\Arrow.png'),-90)
-    def __init__(self,tower, target, attack_speed, damage):
+    def __init__(self,tower, target):
         super(Arrow,self).__init__()
 
-        self.SPEED = attack_speed
-        self.DAMAGE = damage
+        self.SPEED = tower.projectile_speed
+        self.DAMAGE = tower.damage
 
         self.target = target
 

@@ -1,6 +1,7 @@
 from math import e
 import pygame
-from data.player.tower import DwarfHunter, DwarfSlayer, create_tower_profile
+from pygame import mouse
+from data.player.tower import DwarfHunter, DwarfSlayer
 
 TEXT_COLOR = (0,0,0)
 
@@ -8,7 +9,6 @@ TEXT_COLOR = (0,0,0)
 class GUI:
     text_offset = 10
     btn_pressed_offset = 6
-
     def __init__(self,screen):
         self.screen = screen
         # Fonts
@@ -153,8 +153,8 @@ class Player:
         # Tower stats/talents
         for tower in self.towers:
             if tower.clicked:
-                tower.stats_rect = create_tower_profile(self.screen, tower.name, tower.lvl, tower.damage, tower.attack_speed, tower.skill_point, tower.icon)
-
+                tower.tower_profile.create_tower_profile(self.screen)
+                   
     def update(self):
         # Show tower range on hover
         for tower in self.towers:
@@ -165,15 +165,74 @@ class Player:
 
     def events(self,event,blockers):
         mouse_x,mouse_y = pygame.mouse.get_pos()
-
         if event.type == pygame.MOUSEBUTTONUP:
-            # Open tower profile
             for tower in self.towers:
                 if tower.clicked == False:
+                    # Open tower profile
                     if tower.rect.collidepoint((mouse_x,mouse_y)):
                         tower.clicked = True
                 elif tower.clicked == True:
-                    if not tower.stats_rect.collidepoint((mouse_x,mouse_y)):
+                    # Open/Close talents
+                    if tower.tower_profile.open_talents:
+                        # Level up talents
+                        if tower.skill_point > 0:
+                            if tower.tower_profile.skill_1_rect.collidepoint((mouse_x - 1111,mouse_y - 892)):
+                                if tower.skill_tree['skill_1']['current_upgrades'] < tower.skill_tree['skill_1']['max_upgrades']:
+                                    tower.skill_tree['skill_1']['current_upgrades'] += 1
+                                    tower.skill_point -= 1
+                                    tower.skill_tree['skill_1']['lvl_up'] = True
+                            if tower.tower_profile.skill_2_rect.collidepoint((mouse_x - 1111,mouse_y - 892)):
+                                if tower.skill_tree['skill_2']['current_upgrades'] < tower.skill_tree['skill_2']['max_upgrades']:
+                                    tower.skill_tree['skill_2']['current_upgrades'] += 1
+                                    tower.skill_point -= 1
+                                    tower.skill_tree['skill_2']['lvl_up'] = True
+                            if tower.tower_profile.skill_3_rect.collidepoint((mouse_x - 1111,mouse_y - 892)):
+                                if tower.skill_tree['skill_3']['current_upgrades'] < tower.skill_tree['skill_3']['max_upgrades']:
+                                    tower.skill_tree['skill_3']['current_upgrades'] += 1
+                                    tower.skill_point -= 1
+                            if tower.tower_profile.skill_4_rect.collidepoint((mouse_x - 1111,mouse_y - 892)):
+                                if tower.skill_tree['skill_4']['current_upgrades'] < tower.skill_tree['skill_4']['max_upgrades']:
+                                    tower.skill_tree['skill_4']['current_upgrades'] += 1
+                                    tower.skill_point -= 1   
+                            if tower.tower_profile.skill_5_rect.collidepoint((mouse_x - 1111,mouse_y - 892)):
+                                if tower.skill_tree['skill_5']['current_upgrades'] < tower.skill_tree['skill_5']['max_upgrades']:
+                                    tower.skill_tree['skill_5']['current_upgrades'] += 1
+                                    tower.skill_point -= 1
+                            if tower.tower_profile.skill_6_rect.collidepoint((mouse_x - 1111,mouse_y - 892)):
+                                if tower.skill_tree['skill_6']['current_upgrades'] < tower.skill_tree['skill_6']['max_upgrades']:
+                                    tower.skill_tree['skill_6']['current_upgrades'] += 1
+                                    tower.skill_point -= 1
+                            if tower.tower_profile.skill_7_rect.collidepoint((mouse_x - 1111,mouse_y - 892)):
+                                if tower.skill_tree['skill_7']['current_upgrades'] < tower.skill_tree['skill_7']['max_upgrades']:
+                                    tower.skill_tree['skill_7']['current_upgrades'] += 1
+                                    tower.skill_point -= 1
+                            if tower.tower_profile.skill_8_rect.collidepoint((mouse_x - 1111,mouse_y - 892)):
+                                if tower.skill_tree['skill_8']['current_upgrades'] < tower.skill_tree['skill_8']['max_upgrades']:
+                                    tower.skill_tree['skill_8']['current_upgrades'] += 1
+                                    tower.skill_point -= 1  
+                            if tower.tower_profile.skill_9_rect.collidepoint((mouse_x - 1111,mouse_y - 892)):
+                                if tower.skill_tree['skill_9']['current_upgrades'] < tower.skill_tree['skill_9']['max_upgrades']:
+                                    tower.skill_tree['skill_9']['current_upgrades'] += 1
+                                    tower.skill_point -= 1   
+                            if tower.tower_profile.skill_10_rect.collidepoint((mouse_x - 1111,mouse_y - 892)):
+                                if tower.skill_tree['skill_10']['current_upgrades'] < tower.skill_tree['skill_10']['max_upgrades']:
+                                    tower.skill_tree['skill_10']['current_upgrades'] += 1
+                                    tower.skill_point -= 1
+                            if tower.tower_profile.skill_11_rect.collidepoint((mouse_x - 1111,mouse_y - 892)):
+                                if tower.skill_tree['skill_11']['current_upgrades'] < tower.skill_tree['skill_11']['max_upgrades']:
+                                    tower.skill_tree['skill_11']['current_upgrades'] += 1
+                                    tower.skill_point -= 1
+                            if tower.tower_profile.skill_12_rect.collidepoint((mouse_x - 1111,mouse_y - 892)):
+                                if tower.skill_tree['skill_12']['current_upgrades'] < tower.skill_tree['skill_12']['max_upgrades']:
+                                    tower.skill_tree['skill_12']['current_upgrades'] += 1
+                                    tower.skill_point -= 1                                                                                                                                          
+                        if tower.tower_profile.close_talents_rect.collidepoint((mouse_x,mouse_y)):
+                            tower.tower_profile.open_talents = False
+                    else:
+                        if tower.tower_profile.open_talents_rect.collidepoint((mouse_x,mouse_y)):
+                            tower.tower_profile.open_talents = True
+                    # Close tower profile
+                    if not tower.tower_profile.tower_profile_rect.collidepoint((mouse_x,mouse_y)):
                         tower.clicked = False
 
         if event.type == pygame.MOUSEBUTTONDOWN:
