@@ -9,7 +9,6 @@ TEXT_COLOR = (0,0,0)
 class GUI:
     text_offset = 10
     btn_pressed_offset = 6
-
     def __init__(self,screen):
         self.screen = screen
         # Fonts
@@ -186,6 +185,7 @@ class Player:
                                 if tower.skill_tree['skill_2']['current_upgrades'] < tower.skill_tree['skill_2']['max_upgrades']:
                                     tower.skill_tree['skill_2']['current_upgrades'] += 1
                                     tower.skill_point -= 1
+                                    tower.skill_tree['skill_2']['lvl_up'] = True
                             if tower.tower_profile.skill_3_rect.collidepoint((mouse_x - 1111,mouse_y - 892)):
                                 if tower.skill_tree['skill_3']['current_upgrades'] < tower.skill_tree['skill_3']['max_upgrades']:
                                     tower.skill_tree['skill_3']['current_upgrades'] += 1

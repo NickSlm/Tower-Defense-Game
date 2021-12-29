@@ -102,7 +102,7 @@ class Game:
                         bullet.kill()
 
                 # Game-over condition
-                if self.player.health <= 0 or self.round == 7:
+                if self.player.health <= 0:
                     self.game_over = True
     def draw(self):
         """ Draw everything on the screen for the game. """

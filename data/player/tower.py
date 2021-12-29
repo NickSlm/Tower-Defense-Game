@@ -8,8 +8,6 @@ from data.player.projectile import Arrow
 
 FONT_COLOR = (0,0,0)
 
-
-
 class TowerProfile:
     def __init__(self,tower):
         self.font = pygame.font.Font(r"D:\Games\Tower-Defense-Game\resources\fonts\IMMORTAL.ttf",14)
@@ -193,9 +191,9 @@ class DwarfHunter(pygame.sprite.Sprite):
 
         self.skill_point = 0
         self.skill_tree = {
-            "skill_1":{"name":"attack speed","max_upgrades": 3,"current_upgrades": 0,"lvl_up": False,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\enchant-acid-1.png"},
-            "skill_2":{"name":"damage","max_upgrades": 3,"current_upgrades": 0,"lvl_up": False,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\enchant-blue-1.png"},
-            "skill_3":{"name":"critical chance","max_upgrades": 3,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\enchant-red-1.png"},
+            "skill_1":{"name":"attack speed","max_upgrades": 3,"current_upgrades": 0,"lvl_up": False,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\attack_speed.png"},
+            "skill_2":{"name":"damage","max_upgrades": 3,"current_upgrades": 0,"lvl_up": False,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\attack_dmg.png"},
+            "skill_3":{"name":"critical chance","max_upgrades": 3,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\attack_crit.png"},
             "skill_4":{"name":"frost","max_upgrades": 3,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\horror-acid-1.png"},
             "skill_5":{"name":"fire","max_upgrades": 3,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\horror-eerie-1.png"},
             "skill_6":{"name":"poison","max_upgrades": 3,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\horror-red-1.png"},
@@ -222,10 +220,10 @@ class DwarfHunter(pygame.sprite.Sprite):
             screen.blit(range_image, (self.pos_x - self.attack_range, self.pos_y - self.attack_range))
 
     def level_up(self):
-        if self.xp >= self.xp_required:
+        if self.xp >= self.xp_required and self.lvl < 13:
             self.lvl += 1
-            self.attack_speed -= 0.05
-            self.damage += 0.25
+            self.attack_speed -= 0.025
+            self.damage += 0.55
             self.skill_point += 1
             self.xp = 0
             self.xp_required *= 1.5
@@ -237,18 +235,20 @@ class DwarfHunter(pygame.sprite.Sprite):
     def update(self,dt,enemy_sprites):
         # Handle talents
         if self.skill_tree['skill_1']['lvl_up']:
-            self.attack_speed *= 0.75
+            self.attack_speed -= 0.25
             self.skill_tree['skill_1']['lvl_up'] = False
         if self.skill_tree['skill_2']['lvl_up']:
             self.damage += 1
             self.skill_tree['skill_2']['lvl_up'] = False
+        # Shine when tower has skill points
+        if self.skill_point > 0:
+            pass
         # Cooldown between attacks(attack speed)
         self.timer += dt
         if self.timer / 1000 >= self.attack_speed:
             self.timer -= self.attack_speed * 1000
             target = find_nearest_target(enemy_sprites,self)
             self.attack(target)
-
         # Tower Levels
         self.level_up()
 
@@ -282,7 +282,7 @@ class DwarfSlayer(pygame.sprite.Sprite):
         self.priority = None
 
         self.skill_tree = {
-            "skill_1":{"name": "attack_speed","max_upgrades": 3,"current_upgrades": 0,"lvl_up": False,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\enchant-acid-1.png"}, "skill_2":{"name":"damage","max_upgrades": 3,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\enchant-blue-1.png"}, "skill_3":{"name":"critical chance","max_upgrades": 3,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\enchant-red-1.png"},
+            "skill_1":{"name": "attack_speed","max_upgrades": 3,"current_upgrades": 0,"lvl_up": False,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\enchant-acid-1.png"}, "skill_2":{"name":"damage","max_upgrades": 3,"current_upgrades": 0,"lvl_up":False,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\enchant-blue-1.png"}, "skill_3":{"name":"critical chance","max_upgrades": 3,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\enchant-red-1.png"},
             "skill_4":{"name": "frost","max_upgrades": 3,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\horror-acid-1.png"}, "skill_5":{"name": "fire","max_upgrades": 3,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\horror-eerie-1.png"}, "skill_6":{"name":"poison","max_upgrades": 3,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\horror-red-1.png"},
             "skill_7":{"name": "ricochet","max_upgrades": 1,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\lighting-acid-1.png"}, "skill_8":{"name":"pierce","max_upgrades": 1,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\lighting-eerie-1.png"}, "skill_9":{"name":"homing","max_upgrades": 1,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\lighting-fire-1.png"},
             "skill_10":{"name": "double arrows","max_upgrades": 1,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\needles-acid-1.png"}, "skill_11":{"name":"split","max_upgrades": 1,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\needles-blue-1.png"}, "skill_12":{"name":"multishot","max_upgrades": 1,"current_upgrades": 0,"icon":r"D:\Games\Tower-Defense-Game\resources\sprites\towers\tower_0001\skill-icon\needles-blue-1.png"}
@@ -304,8 +304,8 @@ class DwarfSlayer(pygame.sprite.Sprite):
     def level_up(self):
         if self.xp >= self.xp_required:
             self.lvl += 1
-            self.attack_speed -= 0.05
-            self.damage += 0.5
+            self.attack_speed -= 0.025
+            self.damage += 0.55
             self.skill_point += 1
             self.xp = 0
             self.xp_required *= 1.5  
@@ -317,17 +317,19 @@ class DwarfSlayer(pygame.sprite.Sprite):
     def update(self,dt,enemy_sprites):
         # Handle talents
         if self.skill_tree['skill_1']['lvl_up']:
-            self.attack_speed *= 0.75
+            self.attack_speed -= 0.25
             self.skill_tree['skill_1']['lvl_up'] = False
         if self.skill_tree['skill_2']['lvl_up']:
             self.damage += 1
-            self.skill_tree['skill_2']['lvl_up'] = False           
+            self.skill_tree['skill_2']['lvl_up'] = False
+        # Shine when tower has skill_points
+        if self.skill_point > 0:
+            pass        
         # Cooldown between attacks
         self.timer += dt
         if self.timer / 1000 >= self.attack_speed:
             self.timer -= self.attack_speed * 1000
             target = find_nearest_target(enemy_sprites,self)
             self.attack(target)
-        
         # Tower Levels
         self.level_up()
