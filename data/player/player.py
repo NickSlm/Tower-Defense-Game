@@ -19,59 +19,59 @@ class GUI:
 
         # Tower select menu buttons
         self.btn_1 = False
-        self.btn_1_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button11.png')
-        self.btn_1_rect = self.btn_1_srf.get_rect(topleft=(32, 32))
-        self.btn_1_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button12.png')
-        self.btn_1_pressed_rect = self.btn_1_pressed_srf.get_rect(topleft=(32, 32 + self.btn_pressed_offset))
+        self.btn_1_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\1.png')
+        self.btn_1_rect = self.btn_1_srf.get_rect(topleft=(48, 26))
+        self.btn_1_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\1_pressed.png')
+        self.btn_1_pressed_rect = self.btn_1_pressed_srf.get_rect(topleft=(48, 26))
 
         self.btn_2 = False
-        self.btn_2_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button11.png')
-        self.btn_2_rect = self.btn_2_srf.get_rect(topleft=(113, 32))
-        self.btn_2_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button12.png')
-        self.btn_2_pressed_rect = self.btn_2_pressed_srf.get_rect(topleft=(113, 32 + self.btn_pressed_offset))
+        self.btn_2_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\2.png')
+        self.btn_2_rect = self.btn_2_srf.get_rect(topleft=(144, 26))
+        self.btn_2_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\2_pressed.png')
+        self.btn_2_pressed_rect = self.btn_2_pressed_srf.get_rect(topleft=(144, 26))
 
         self.btn_3 = False
-        self.btn_3_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button11.png')
-        self.btn_3_rect = self.btn_3_srf.get_rect(topleft=(194, 32))
-        self.btn_3_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button12.png')
-        self.btn_3_pressed_rect = self.btn_3_pressed_srf.get_rect(topleft=(194, 32 + self.btn_pressed_offset))
+        self.btn_3_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\1.png')
+        self.btn_3_rect = self.btn_3_srf.get_rect(topleft=(242, 26))
+        self.btn_3_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\1_pressed.png')
+        self.btn_3_pressed_rect = self.btn_3_pressed_srf.get_rect(topleft=(242, 26))
 
         self.btn_4 = False
-        self.btn_4_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button11.png')
-        self.btn_4_rect = self.btn_4_srf.get_rect(topleft=(275, 32))
-        self.btn_4_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button12.png')
-        self.btn_4_pressed_rect = self.btn_4_pressed_srf.get_rect(topleft=(275, 32 + self.btn_pressed_offset))
+        self.btn_4_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\1.png')
+        self.btn_4_rect = self.btn_4_srf.get_rect(topleft=(336, 26))
+        self.btn_4_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\1_pressed.png')
+        self.btn_4_pressed_rect = self.btn_4_pressed_srf.get_rect(topleft=(336, 26))
 
         self.btn_5 = False
-        self.btn_5_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button11.png')
-        self.btn_5_rect = self.btn_5_srf.get_rect(topleft=(32, 113))
-        self.btn_5_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button12.png')
-        self.btn_5_pressed_rect = self.btn_5_pressed_srf.get_rect(topleft=(32, 113 + self.btn_pressed_offset))
+        self.btn_5_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\1.png')
+        self.btn_5_rect = self.btn_5_srf.get_rect(topleft=(48, 154))
+        self.btn_5_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\1_pressed.png')
+        self.btn_5_pressed_rect = self.btn_5_pressed_srf.get_rect(topleft=(48, 154))
 
         self.btn_6 = False
-        self.btn_6_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button11.png')
-        self.btn_6_rect = self.btn_6_srf.get_rect(topleft=(113, 113))
-        self.btn_6_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button12.png')
-        self.btn_6_pressed_rect = self.btn_6_pressed_srf.get_rect(topleft=(113, 113 + self.btn_pressed_offset))
+        self.btn_6_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\1.png')
+        self.btn_6_rect = self.btn_6_srf.get_rect(topleft=(144, 154))
+        self.btn_6_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\1_pressed.png')
+        self.btn_6_pressed_rect = self.btn_6_pressed_srf.get_rect(topleft=(144, 154))
 
         self.btn_7 = False
-        self.btn_7_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button11.png')
-        self.btn_7_rect = self.btn_7_srf.get_rect(topleft=(194,113))
-        self.btn_7_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button12.png')
-        self.btn_7_pressed_rect = self.btn_7_pressed_srf.get_rect(topleft=(194, 113 + self.btn_pressed_offset))
+        self.btn_7_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\1.png')
+        self.btn_7_rect = self.btn_7_srf.get_rect(topleft=(242,154))
+        self.btn_7_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\1_pressed.png')
+        self.btn_7_pressed_rect = self.btn_7_pressed_srf.get_rect(topleft=(242,154))
 
         self.btn_8 = False
-        self.btn_8_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button11.png')
-        self.btn_8_rect = self.btn_8_srf.get_rect(topleft=(275,113))
-        self.btn_8_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\green_button12.png')
-        self.btn_8_pressed_rect = self.btn_8_pressed_srf.get_rect(topleft=(275, 113 + self.btn_pressed_offset))
+        self.btn_8_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\1.png')
+        self.btn_8_rect = self.btn_8_srf.get_rect(topleft=(336,154))
+        self.btn_8_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\1_pressed.png')
+        self.btn_8_pressed_rect = self.btn_8_pressed_srf.get_rect(topleft=(336,154))
 
         # Start round button
-        self.start_btn = False
-        self.start_btn_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\start.png')
-        self.start_btn_rect = self.start_btn_srf.get_rect(topleft = (500,500))
-        self.start_btn_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\start_pressed.png')
-        self.start_btn_pressed_rect = self.start_btn_pressed_srf.get_rect(topleft = (500,506))
+        # self.start_btn = False
+        # self.start_btn_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\start.png')
+        # self.start_btn_rect = self.start_btn_srf.get_rect(topleft = (500,500))
+        # self.start_btn_pressed_srf = pygame.image.load(r'D:\Games\Tower-Defense-Game\resources\game\start_pressed.png')
+        # self.start_btn_pressed_rect = self.start_btn_pressed_srf.get_rect(topleft = (500,500))
 
     def player_resources(self,round,health,money):
         health_text = self.font.render("Health: "+str(health), 1, TEXT_COLOR)
