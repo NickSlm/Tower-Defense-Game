@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="70">
- <tileset firstgid="1" source="tilesets/samplemap.tsx"/>
- <tileset firstgid="3601" source="tilesets/[Base]BaseChip_pipo.tsx"/>
+ <tileset firstgid="1" source="Pipoya RPG Tileset 32x32/samplemap.tsx"/>
+ <tileset firstgid="3601" source="Pipoya RPG Tileset 32x32/SampleMap/[Base]BaseChip_pipo.tsx"/>
  <layer id="1" name="background" width="60" height="34" locked="1">
   <data encoding="csv">
 3203,3261,3141,3201,3319,3201,3201,3263,3203,3261,3263,3319,3260,3202,3202,3260,3262,3261,3259,3201,3203,3203,3202,3262,3263,3262,3141,3259,3202,3263,3263,3204,3204,3319,3201,3261,3204,3204,3261,3319,3201,3260,3319,3262,3259,3261,3202,3260,3261,3204,3203,3204,3263,3201,3262,3263,3201,3260,3319,3141,
